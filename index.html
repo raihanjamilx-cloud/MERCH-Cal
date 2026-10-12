@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="bn" class="h-full bg-slate-950"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pretty Sweaters Ltd - Merchandising Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Hind Siliguri -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <!-- JSZip & FileSaver for downloading application as ZIP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Hind Siliguri', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 12px 30px -5px rgba(14, 165, 233, 0.25);
+            transform: translateY(-4px) scale(1.01);
+        }
+
+        .glass-input {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .glass-input:focus {
+            border-color: #38bdf8;
+            outline: none;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.35);
+        }
+
+        /* Neon Glow Clock */
+        .neon-clock {
+            color: #00f0ff;
+            text-shadow: 0 0 5px #00f0ff, 0 0 15px #00f0ff, 0 0 30px #0284c7, 0 0 60px #0284c7;
+        }
+
+        .glowing-date-text {
+            color: #38bdf8;
+            text-shadow: 0 0 8px rgba(56, 189, 248, 0.9), 0 0 18px rgba(14, 165, 233, 0.8);
+            font-weight: 700;
+        }
+
+        /* Wall Calendar Binder Ring Styling */
+        .calendar-binder-ring {
+            width: 14px;
+            height: 28px;
+            background: linear-gradient(135deg, #f1f5f9 0%, #94a3b8 50%, #475569 100%);
+            border-radius: 6px;
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.9), 0 6px 8px rgba(0,0,0,0.5);
+            position: absolute;
+            top: -14px;
+        }
+
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(56, 189, 248, 0.4);
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(56, 189, 248, 0.7);
+        }
+
+        /* Glass Analog Clock Hands */
+        .analog-hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(6px);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                opacity: 0.4;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.05);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .animate-ambient-pulse {
+            animation: pulseGlow 6s infinite ease-in-out;
+        }
+
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+    </style>
+</head>
+<body class="h-full text-slate-100 font-sans bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-900 via-indigo-950 to-slate-950 min-h-screen custom-scrollbar relative overflow-x-hidden">
+
+    <!-- Login Screen Overlay -->
+    <div id="login-overlay" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-md rounded-2xl border border-slate-700/80 p-8 shadow-2xl animate-fade-in-up space-y-6">
+            <div class="text-center space-y-2">
+                <!-- PG Logo Image replacing lock symbol -->
+                <div class="w-20 h-20 rounded-2xl bg-slate-900/80 flex items-center justify-center border border-sky-400/30 p-2 mx-auto shadow-lg shadow-sky-500/20">
+                    <img src="Gemini_Generated_Image_qu44c4qu44c4qu44.jpg" alt="Pretty Group Logo" class="w-full h-full object-contain rounded-xl">
+                </div>
+                <h2 class="text-xl font-extrabold text-white">Pretty Sweaters Ltd Portal</h2>
+                <p class="text-xs text-sky-300/80">Please enter your credentials to access</p>
+            </div>
+
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Username</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input type="text" id="login-username" required placeholder="Enter username..." class="w-full glass-input pl-10 pr-4 py-2.5 rounded-xl text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Password</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                        <input type="password" id="login-password" required placeholder="Enter password..." class="w-full glass-input pl-10 pr-4 py-2.5 rounded-xl text-sm">
+                    </div>
+                </div>
+
+                <div id="login-error" class="text-xs text-rose-400 text-center hidden">Invalid username or password!</div>
+
+                <button type="submit" class="w-full py-3 text-xs font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 rounded-xl shadow-lg shadow-cyan-500/25 transition-all active:scale-95 border border-cyan-400/30">
+                    Login Portal
+                </button>
+            </form>
+            
+            <div class="text-[11px] text-slate-500 text-center border-t border-slate-800 pt-4">
+                Authorized Personnel Only • Pretty Sweaters Ltd
+            </div>
+        </div>
+    </div>
+
+    <!-- Ambient background blurred glow circles -->
+    <div class="fixed -top-24 -left-24 w-96 h-96 bg-sky-600/15 rounded-full blur-3xl pointer-events-none animate-ambient-pulse"></div>
+    <div class="fixed top-1/2 right-0 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-3xl pointer-events-none animate-ambient-pulse" style="animation-delay: 3s;"></div>
+
+    <header class="sticky top-0 z-40 glass-panel border-b border-slate-700/50 px-4 lg:px-8 py-3.5">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            
+            <!-- Brand Logo & Title -->
+            <div class="flex items-center gap-3.5">
+                <!-- Replacement of garment picture box with PG Logo -->
+                <div class="w-12 h-12 rounded-2xl bg-slate-900 border border-cyan-400/40 p-1 flex items-center justify-center shadow-lg shadow-cyan-500/30">
+                    <img src="Gemini_Generated_Image_qu44c4qu44c4qu44.jpg" alt="PG Logo" class="w-full h-full object-contain rounded-xl">
+                </div>
+                <div>
+                    <h1 id="i18n-company-title" class="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-sky-200 via-cyan-100 to-white">Pretty Sweaters Ltd</h1>
+                    <p id="i18n-company-subtitle" class="text-xs text-sky-300/80 font-medium tracking-wide">Pretty Sweaters Ltd • Merchandising Management System</p>
+                </div>
+            </div>
+
+            <!-- Header Actions & Language Switcher -->
+            <div class="flex items-center gap-3 flex-wrap">
+                <!-- Logged User Info & Logout Button -->
+                <button onclick="handleLogout()" class="px-3 py-2 text-xs font-semibold text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 rounded-xl transition-all flex items-center gap-2" title="Logout">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span id="current-user-display">Logout</span>
+                </button>
+
+                <!-- Interactive Bilingual Language Switcher Toggle Button -->
+                <button onclick="toggleLanguage()" class="px-4 py-2 text-xs font-bold bg-slate-900/90 hover:bg-slate-800 text-sky-300 border border-sky-500/40 rounded-xl shadow-lg shadow-sky-500/10 transition-all flex items-center gap-2.5 group active:scale-95">
+                    <i class="fa-solid fa-globe text-cyan-400 text-sm group-hover:rotate-180 transition-transform duration-500"></i>
+                    <span id="lang-toggle-text">Language: বাংলা</span>
+                    <span class="text-[10px] bg-sky-500/20 text-sky-300 px-1.5 py-0.5 rounded border border-sky-400/30">EN/BN</span>
+                </button>
+
+                <!-- Add New Style Button -->
+                <button onclick="openNewStyleModal()" class="px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 rounded-xl shadow-lg shadow-cyan-500/25 transition-all flex items-center gap-2 active:scale-95 border border-cyan-400/30">
+                    <i class="fa-solid fa-plus text-sm"></i> <span id="i18n-btn-add-style">Add New Style</span>
+                </button>
+
+                <!-- Excel Export -->
+                <button onclick="exportStylesCSV()" class="px-3.5 py-2 text-xs font-medium text-slate-200 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-600/50 rounded-xl transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-file-excel text-emerald-400"></i> <span id="i18n-btn-excel">Excel Export</span>
+                </button>
+
+                <!-- ZIP Download -->
+                <button onclick="downloadZipApp()" class="px-3.5 py-2 text-xs font-medium text-slate-200 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-600/50 rounded-xl transition-all flex items-center gap-1.5" title="Download Full Project Source as ZIP">
+                    <i class="fa-solid fa-file-zipper text-sky-400"></i> <span id="i18n-btn-zip">App ZIP</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 lg:px-8 py-6 space-y-6">
+
+        <!-- Top Row: Animated Digital Clock & Frameless Glass Analog Clock -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- Real-time Neon Digital Clock & Frameless Glass Analog Clock Widget -->
+            <div class="lg:col-span-5 flex flex-col justify-between glass-panel rounded-2xl p-6 relative overflow-hidden animate-fade-in-up stagger-1">
+                <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div>
+                    <div class="flex items-center justify-between border-b border-slate-700/60 pb-3 mb-2">
+                        <span class="text-xs font-semibold tracking-wider text-sky-400 uppercase flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span> <span id="i18n-live-clock-label">Digital Live Clock</span>
+                        </span>
+                        <span id="current-timezone-badge" class="text-[11px] bg-slate-900/80 text-sky-300 px-2.5 py-1 rounded-lg border border-slate-700/80 font-mono">BST (+06)</span>
+                    </div>
+
+                    <!-- Neon Clock Display -->
+                    <div class="text-center py-2">
+                        <div id="digital-clock" class="text-3xl sm:text-4xl font-mono font-extrabold neon-clock tracking-widest">11:43:30 PM</div>
+                        <div id="digital-date" class="text-xs text-sky-200/90 font-medium mt-1">Sunday, October 11, 2026</div>
+                    </div>
+
+                    <!-- Frameless Wall-glued Glass Analog Clock -->
+                    <div class="flex justify-center my-3 relative">
+                        <div class="w-28 h-28 relative flex items-center justify-center">
+                            <!-- 12 Wall Markers -->
+                            <div class="absolute text-[10px] font-bold text-sky-300 -top-1">12</div>
+                            <div class="absolute text-[10px] font-bold text-sky-300 -right-1">3</div>
+                            <div class="absolute text-[10px] font-bold text-sky-300 -bottom-1">6</div>
+                            <div class="absolute text-[10px] font-bold text-sky-300 -left-1">9</div>
+
+                            <!-- Glass Hands -->
+                            <div id="analog-hour" class="analog-hand w-1.5 h-7 bg-cyan-200/80 border border-sky-300/60 z-20"></div>
+                            <div id="analog-minute" class="analog-hand w-1 h-10 bg-sky-300/80 border border-cyan-300/60 z-30"></div>
+                            <div id="analog-second" class="analog-hand w-0.5 h-11 bg-rose-400/90 z-40"></div>
+                            <!-- Center Glass Pin -->
+                            <div class="w-3 h-3 rounded-full bg-cyan-400 border border-white z-50 shadow-md shadow-cyan-500/80"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clock Dynamic Stats -->
+                <div class="grid grid-cols-2 gap-3 mt-2 pt-2 border-t border-slate-700/60">
+                    <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
+                        <div id="i18n-active-orders-label" class="text-xs text-slate-400">Active Styles</div>
+                        <div id="quick-active-orders" class="text-xl font-bold text-sky-400 mt-0.5">2</div>
+                    </div>
+                    <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
+                        <div id="i18n-upcoming-ship-label" class="text-xs text-slate-400">Upcoming Shipments</div>
+                        <div id="quick-upcoming-ship" class="text-xl font-bold text-amber-400 mt-0.5">2</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7 glass-panel rounded-2xl p-6 relative border-t-8 border-t-amber-800/80 animate-fade-in-up stagger-2">
+                <!-- Wall Hanging Ring Binding Graphics -->
+                <div class="flex justify-between px-8 absolute top-0 left-0 right-0">
+                    <div class="calendar-binder-ring left-10"></div>
+                    <div class="calendar-binder-ring left-1/4"></div>
+                    <div class="calendar-binder-ring left-2/4"></div>
+                    <div class="calendar-binder-ring left-3/4"></div>
+                    <div class="calendar-binder-ring right-10"></div>
+                </div>
+
+                <!-- Calendar Header Navigation -->
+                <div class="flex items-center justify-between mb-4 pt-2">
+                    <div>
+                        <h2 id="calendar-month-year" class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-days text-sky-400"></i> <span id="calendar-month-title">October 2026</span>
+                        </h2>
+                        <p id="i18n-calendar-desc" class="text-xs text-slate-400">Hanging Wall Calendar • Click any date to add notes</p>
+                    </div>
+
+                    <div class="flex items-center gap-1 bg-slate-900/80 p-1 rounded-xl border border-slate-800">
+                        <button onclick="changeMonth(-1)" class="w-8 h-8 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-all">
+                            <i class="fa-solid fa-chevron-left text-xs"></i>
+                        </button>
+                        <button onclick="resetToCurrentMonth()" class="px-2 py-1 text-xs font-semibold text-sky-400 hover:bg-slate-800 rounded-lg transition-all">
+                            <span id="i18n-cal-today">Today</span>
+                        </button>
+                        <button onclick="changeMonth(1)" class="w-8 h-8 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-all">
+                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Calendar Days Header -->
+                <div id="calendar-days-header" class="grid grid-cols-7 gap-1 text-center text-xs font-bold text-sky-300 mb-2 py-1 bg-slate-900/60 rounded-lg border border-slate-800/80">
+                    <div class="text-rose-400">Sun</div>
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div class="text-amber-400">Sat</div>
+                </div>
+
+                <!-- Calendar Grid -->
+                <div id="calendar-grid" class="grid grid-cols-7 gap-1.5 min-h-[220px]"></div>
+            </div>
+
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Total Active Styles -->
+            <div class="glass-card rounded-2xl p-4 flex items-center gap-4 animate-fade-in-up stagger-1">
+                <div class="w-12 h-12 rounded-xl bg-sky-500/20 text-sky-400 border border-sky-500/30 flex items-center justify-center text-xl shrink-0">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <div>
+                    <div id="i18n-kpi-1-label" class="text-xs font-medium text-slate-400">Total Active Styles</div>
+                    <div id="kpi-total-styles" class="text-2xl font-bold text-white mt-0.5">2</div>
+                    <div id="i18n-kpi-1-sub" class="text-[11px] text-sky-400/80 mt-0.5">Total Styles in Pipeline</div>
+                </div>
+            </div>
+
+            <!-- Total Order Quantity -->
+            <div class="glass-card rounded-2xl p-4 flex items-center gap-4 animate-fade-in-up stagger-2">
+                <div class="w-12 h-12 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center text-xl shrink-0">
+                    <i class="fa-solid fa-boxes-packing"></i>
+                </div>
+                <div>
+                    <div id="i18n-kpi-2-label" class="text-xs font-medium text-slate-400">Total Order Quantity</div>
+                    <div id="kpi-total-qty" class="text-2xl font-bold text-white mt-0.5">2,222 Pcs</div>
+                    <div id="i18n-kpi-2-sub" class="text-[11px] text-indigo-300/80 mt-0.5">Total Quantity (Pcs)</div>
+                </div>
+            </div>
+
+            <!-- Total Order Value -->
+            <div class="glass-card rounded-2xl p-4 flex items-center gap-4 animate-fade-in-up stagger-3">
+                <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-xl shrink-0">
+                    <i class="fa-solid fa-circle-dollar-to-slot"></i>
+                </div>
+                <div>
+                    <div id="i18n-kpi-3-label" class="text-xs font-medium text-slate-400">Total Shipment Value</div>
+                    <div id="kpi-total-value" class="text-2xl font-bold text-emerald-400 mt-0.5">$11,110.00</div>
+                    <div id="i18n-kpi-3-sub" class="text-[11px] text-emerald-300/80 mt-0.5">FOB Total ($ USD)</div>
+                </div>
+            </div>
+
+            <!-- Pending Approvals -->
+            <div class="glass-card rounded-2xl p-4 flex items-center gap-4 animate-fade-in-up stagger-4">
+                <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-xl shrink-0">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                </div>
+                <div>
+                    <div id="i18n-kpi-4-label" class="text-xs font-medium text-slate-400">Pending Approvals</div>
+                    <div id="kpi-pending-approvals" class="text-2xl font-bold text-amber-400 mt-0.5">17</div>
+                    <div id="i18n-kpi-4-sub" class="text-[11px] text-amber-300/80 mt-0.5">Fit, PP, Yarn &amp; Samples</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-panel rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 animate-fade-in-up">
+            <!-- Search Input -->
+            <div class="relative w-full md:w-96">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                <input type="text" id="search-input" oninput="renderStyleList()" placeholder="Search by Style No, Buyer, or Yarn..." class="w-full glass-input pl-10 pr-4 py-2 rounded-xl text-sm placeholder-slate-400">
+            </div>
+
+            <!-- Filter Dropdowns -->
+            <div class="flex items-center gap-3 w-full md:w-auto flex-wrap">
+                <!-- Status Filter -->
+                <select id="filter-status" onchange="renderStyleList()" class="glass-input px-3.5 py-2 rounded-xl text-sm bg-slate-900 border-slate-700">
+                    <option value="ALL">সকল স্ট্যাটাস (All Status)</option>
+                    <option value="Yarn Booking">Yarn Booking</option>
+                    <option value="Lab Dip">Lab Dip</option>
+                    <option value="Fit Sample">Fit Sample</option>
+                    <option value="PP Sample">PP Sample</option>
+                    <option value="Knitting/Production">Knitting/Production</option>
+                    <option value="Washing &amp; Finishing">Washing &amp; Finishing</option>
+                    <option value="Packing">Packing</option>
+                    <option value="Shipped">Shipped</option>
+                </select>
+
+                <!-- Gauge Filter -->
+                <select id="filter-gauge" onchange="renderStyleList()" class="glass-input px-3.5 py-2 rounded-xl text-sm bg-slate-900 border-slate-700">
+                    <option value="ALL">সকল গেজ (All Gauge)</option>
+                    <option value="3GG">3 Gauge (GG)</option>
+                    <option value="5GG">5 Gauge (GG)</option>
+                    <option value="7GG">7 Gauge (GG)</option>
+                    <option value="12GG">12 Gauge (GG)</option>
+                    <option value="14GG">14 Gauge (GG)</option>
+                </select>
+
+                <button onclick="resetFilters()" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-all" title="Reset Filters">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 id="i18n-styles-master-title" class="text-lg font-bold text-slate-200 flex items-center gap-2"><i class="fa-solid fa-list-check text-cyan-400"></i> Sweater Order &amp; Shipment Tracker</h3>
+                <span id="styles-count-badge" class="text-xs bg-sky-500/20 text-sky-300 border border-sky-500/30 px-3 py-1 rounded-full">2 Styles Displayed</span>
+            </div>
+
+            <!-- Styles Dynamic Animated Card List -->
+            <div id="styles-container" class="space-y-4"></div>
+        </div>
+
+    </main>
+
+    <div id="style-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-panel w-full max-w-3xl rounded-2xl border border-slate-700 shadow-2xl max-h-[90vh] flex flex-col overflow-hidden animate-fade-in-up">
+
+            <!-- Modal Header -->
+            <div class="p-5 border-b border-slate-700/80 flex items-center justify-between bg-slate-900/80">
+                <h3 id="i18n-modal-title" class="text-lg font-bold text-white flex items-center gap-2">নতুন স্টাইল যুক্ত করুন</h3>
+                <button onclick="closeStyleModal()" class="w-8 h-8 rounded-xl bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-all">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Modal Form Body -->
+            <form id="style-form" onsubmit="handleStyleSubmit(event)" class="p-6 overflow-y-auto custom-scrollbar space-y-4">
+                <input type="hidden" id="form-style-id" value="">
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Style No -->
+                    <div>
+                        <label id="i18n-lbl-styleno" class="block text-xs font-semibold text-slate-300 mb-1">Style Number *</label>
+                        <input type="text" id="form-style-no" required="" placeholder="Ex: PSL-2026-889" class="w-full glass-input px-3.5 py-2 rounded-xl text-sm">
+                    </div>
+
+                    <!-- Buyer Name -->
+                    <div>
+                        <label id="i18n-lbl-buyer" class="block text-xs font-semibold text-slate-300 mb-1">Buyer Name *</label>
+                        <input type="text" id="form-buyer" required="" placeholder="Ex: H&amp;M, Zara, AEO" class="w-full glass-input px-3.5 py-2 rounded-xl text-sm">
+                    </div>
+
+                    <!-- Gauge (GG) -->
+                    <div>
+                        <label id="i18n-lbl-gauge" class="block text-xs font-semibold text-slate-300 mb-1">Gauge (GG) *</label>
+                        <select id="form-gauge" required="" class="w-full glass-input px-3.5 py-2 rounded-xl text-sm bg-slate-900">
+                            <option value="12GG">12 GG (Standard Fine)</option>
+                            <option value="7GG">7 GG (Medium Gauge)</option>
+                            <option value="5GG">5 GG (Chunky)</option>
+                            <option value="3GG">3 GG (Heavy Knit)</option>
+                            <option value="14GG">14 GG (Ultra Fine)</option>
+                        </select>
+                    </div>
+
+                    <!-- Yarn Type -->
+                    <div>
+                        <label id="i18n-lbl-yarn" class="block text-xs font-semibold text-slate-300 mb-1">Yarn Type &amp; Composition *</label>
+                        <input type="text" id="form-yarn" required="" placeholder="Ex: 100% Cotton 2/28s, Acrylic Blend" class="w-full glass-input px-3.5 py-2 rounded-xl text-sm">
+                    </div>
+
+                    <!-- Quantity -->
+                    <div>
+                        <label id="i18n-lbl-qty" class="block text-xs font-semibold text-slate-300 mb-1">Order Quantity (Pcs) *</label>
+                        <input type="number" id="form-quantity" required="" min="1" placeholder="Ex: 12000" class="w-full glass-input px-3.5 py-2 rounded-xl text-sm">
+                    </div>
+
+                    <!-- FOB Price -->
+                    <div>
+                        <label id="i18n-lbl-fob" class="block text-xs font-semibold text-slate-300 mb-1">FOB Price ($ / Pc) *</label>
+                        <input type="number" step="0.01" id="form-fob" required="" placeholder="Ex: 8.50" class="w-full glass-input px-3.5 py-2 rounded-xl text-sm">
+                    </div>
+
+                    <!-- Order Date -->
+                    <div>
+                        <label id="i18n-lbl-orderdate" class="block text-xs font-semibold text-slate-300 mb-1">Order Received Date *</label>
+                        <input type="date" id="form-order-date" required="" class="w-full glass-input px-3.5 py-2 rounded-xl text-sm">
+                    </div>
+
+                    <!-- Shipment Date -->
+                    <div>
+                        <label id="i18n-lbl-shipdate" class="block text-xs font-semibold text-slate-300 mb-1">Shipment Date *</label>
+                        <input type="date" id="form-ship-date" required="" class="w-full glass-input px-3.5 py-2 rounded-xl text-sm">
+                    </div>
+                </div>
+
+                <!-- Status & Attachments -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-700/60">
+                    <div>
+                        <label id="i18n-lbl-status" class="block text-xs font-semibold text-slate-300 mb-1">Current Stage *</label>
+                        <select id="form-status" class="w-full glass-input px-3.5 py-2 rounded-xl text-sm bg-slate-900">
+                            <option value="Yarn Booking">Yarn Booking</option>
+                            <option value="Lab Dip">Lab Dip</option>
+                            <option value="Fit Sample">Fit Sample</option>
+                            <option value="PP Sample">PP Sample</option>
+                            <option value="Knitting/Production">Knitting/Production</option>
+                            <option value="Washing &amp; Finishing">Washing &amp; Finishing</option>
+                            <option value="Packing">Packing</option>
+                            <option value="Shipped">Shipped</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label id="i18n-lbl-img" class="block text-xs font-semibold text-slate-300 mb-1">Style Image / Sketch</label>
+                        <input type="file" id="form-image" accept="image/*" onchange="handleImagePreview(event)" class="w-full glass-input px-3 py-1.5 rounded-xl text-xs text-slate-400 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-sky-500/20 file:text-sky-300">
+                        <input type="hidden" id="form-image-base64" value="">
+                    </div>
+                </div>
+
+                <!-- Tech Pack Upload -->
+                <div>
+                    <label id="i18n-lbl-techpack" class="block text-xs font-semibold text-slate-300 mb-1">Tech Pack PDF Upload</label>
+                    <input type="file" id="form-techpack" accept=".pdf,image/*" onchange="handleTechpackFile(event)" class="w-full glass-input px-3 py-1.5 rounded-xl text-xs text-slate-400 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/20 file:text-cyan-300">
+                    <input type="hidden" id="form-techpack-name" value="">
+                    <input type="hidden" id="form-techpack-data" value="">
+                </div>
+
+                <!-- Image Preview -->
+                <div id="image-preview-container" class="hidden mt-2 p-2 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center gap-3">
+                    <img id="image-preview" class="w-16 h-16 object-cover rounded-lg border border-slate-700">
+                    <span id="i18n-img-ready" class="text-xs text-slate-400">Image Ready</span>
+                </div>
+
+                <!-- Form Submit Buttons -->
+                <div class="pt-4 flex justify-end gap-3 border-t border-slate-700/80">
+                    <button type="button" onclick="closeStyleModal()" class="px-4 py-2 text-xs font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-xl transition-all">
+                        <span id="i18n-btn-cancel">Cancel</span>
+                    </button>
+                    <button type="submit" class="px-5 py-2 text-xs font-semibold text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 rounded-xl shadow-lg shadow-cyan-500/20 transition-all">
+                        <span id="i18n-btn-save">Save Style</span>
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="calendar-note-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-panel w-full max-w-md rounded-2xl border border-slate-700 p-6 space-y-4 animate-fade-in-up">
+            <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                <h4 id="calendar-note-date-title" class="text-base font-bold text-white flex items-center gap-2"><span id="i18n-cal-note-title">তারিখের নোট যুক্ত করুন</span> (<span id="calendar-note-date-key-display">2026-10-12</span>)</h4>
+                <button onclick="closeCalendarNoteModal()" class="text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <input type="hidden" id="calendar-note-date-key" value="2026-10-12">
+            <textarea id="calendar-note-text" rows="3" placeholder="Ex: Yarn delivery, Lab Dip deadline..." class="w-full glass-input p-3 rounded-xl text-sm placeholder-slate-500"></textarea>
+            <div class="flex justify-end gap-2">
+                <button onclick="deleteCalendarNote()" class="px-3 py-1.5 text-xs text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 rounded-xl transition-all">
+                    <span id="i18n-btn-delete-note">Delete Note</span>
+                </button>
+                <button onclick="saveCalendarNote()" class="px-4 py-1.5 text-xs font-semibold text-white bg-sky-600 hover:bg-sky-500 rounded-xl transition-all">
+                    <span id="i18n-btn-save-note">Save Note</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Multi-User Symbolic Credentials List (5 Users)
+        const validUsers = {
+            "mridul": "m123",       // 1. Mridul kumar shaha
+            "shafikul": "s123",     // 2. Shafikul islam rasel
+            "rounek": "r123",       // 3. Rounek rahman
+            "solaiman": "s456",     // 4. Solaiman hossen
+            "raihan": "r456"        // 5. Raihan jamil
+        };
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('login-username').value.trim().toLowerCase();
+            const p = document.getElementById('login-password').value.trim();
+            const errDiv = document.getElementById('login-error');
+
+            if (validUsers[u] && validUsers[u] === p) {
+                localStorage.setItem('priti_logged_user', u);
+                document.getElementById('login-overlay').classList.add('hidden');
+                document.getElementById('current-user-display').innerText = u.toUpperCase();
+            } else {
+                errDiv.classList.remove('hidden');
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('priti_logged_user');
+            document.getElementById('login-username').value = '';
+            document.getElementById('login-password').value = '';
+            document.getElementById('login-error').classList.add('hidden');
+            document.getElementById('login-overlay').classList.remove('hidden');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const loggedUser = localStorage.getItem('priti_logged_user');
+            if (loggedUser && validUsers[loggedUser]) {
+                document.getElementById('login-overlay').classList.add('hidden');
+                document.getElementById('current-user-display').innerText = loggedUser.toUpperCase();
+            } else {
+                document.getElementById('login-overlay').classList.remove('hidden');
+            }
+        });
+
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyBNSZN8Xud3MDtP-1JujurZjp2Wm3EBDCs",
+            authDomain: "merch-calendar-59467.firebaseapp.com",
+            databaseURL: "https://merch-calendar-59467-default-rtdb.firebaseio.com",
+            projectId: "merch-calendar-59467",
+            storageBucket: "merch-calendar-59467.firebasestorage.app",
+            messagingSenderId: "291416023418",
+            appId: "1:291416023418:web:8798be470882e72087f6c3"
+        };
+
+        // Initialize Firebase (Compat mode)
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        let currentLang = localStorage.getItem('priti_app_lang') || 'BN';
+        const i18n = {
+            BN: {
+                companyTitle: "Pretty Sweaters Ltd",
+                companySubtitle: "Pretty Sweaters Ltd • Merchandising Management System",
+                btnAddStyle: "নতুন স্টাইল যুক্ত করুন",
+                btnExcel: "Excel",
+                btnZip: "App ZIP",
+                liveClockLabel: "ডিজিটাল লাইভ ক্লক",
+                activeOrdersLabel: "সক্রিয় স্টাইল (Active Styles)",
+                upcomingShipLabel: "আসন্ন শিপমেন্ট (Upcoming)",
+                calDesc: "ওয়াল হ্যাঙ্গিং ক্যালেন্ডার • তারিখ ক্লিক করে নোট যোগ করুন",
+                calToday: "আজ",
+                kpi1Label: "মোট একটিভ স্টাইল",
+                kpi1Sub: "Total Active Styles",
+                kpi2Label: "মোট অর্ডার পরিমাণ (Pcs)",
+                kpi2Sub: "Total Order Quantity",
+                kpi3Label: "মোট অর্ডারের মূল্য ($)",
+                kpi3Sub: "Total Order FOB Value",
+                kpi4Label: "পেন্ডিং এপ্রুভাল",
+                kpi4Sub: "Pending Approvals",
+                searchPlaceholder: "স্টাইল নং, বায়ার বা সুতার নাম দিয়ে খুঁজুন...",
+                stylesMasterTitle: "সোয়েটার অর্ডার ও শিপমেন্ট ট্র্যাকার (Master Tracker)",
+                stylesCountSuffix: "টি স্টাইল প্রদর্শিত",
+                modalTitleAdd: "নতুন স্টাইল যুক্ত করুন",
+                modalTitleEdit: "স্টাইল এডিট করুন (Edit Style)",
+                lblStyleNo: "স্টাইল নম্বর (Style No) *",
+                lblBuyer: "বায়ার (Buyer Name) *",
+                lblGauge: "গেজ (Gauge/GG) *",
+                lblYarn: "সুতার টাইপ ও কম্পোজিশন (Yarn Type) *",
+                lblQty: "অর্ডার পরিমাণ (Quantity - Pcs) *",
+                lblFob: "FOB মূল্য ($ / Pc) *",
+                lblOrderDate: "অর্ডার ডেট (Order Received) *",
+                lblShipDate: "শিপমেন্ট ডেট (Shipment Date) *",
+                lblStatus: "বর্তমান স্ট্যাটাস (Current Stage)",
+                lblImg: "সোয়েটারের ছবি (Style Image / Sketch)",
+                lblTechpack: "টেক প্যাক পিডিএফ আপলোড (Tech Pack File)",
+                imgReady: "ছবি প্রস্তুত রয়েছে",
+                btnCancel: "বাতিল",
+                btnSave: "সংরক্ষণ করুন (Save Style)",
+                calNoteTitle: "তারিখের নোট যুক্ত করুন",
+                btnDeleteNote: "মুছে ফেলুন",
+                btnSaveNote: "সেভ করুন",
+                orderQtyText: "অর্ডার পরিমাণ:",
+                fobPriceText: "FOB মূল্য:",
+                totalValText: "মোট মূল্য:",
+                shipDateText: "শিপমেন্ট ডেট:",
+                techpackLabel: "টেক প্যাক (Tech Pack):",
+                noTechpack: "কোন পিডিএফ নেই",
+                downloadText: "ডাউনলোড",
+                tnaTitle: "টাইম এন্ড অ্যাকশন (T&A) ট্র্যাকিং:",
+                days: ['রবি', 'সোম', 'মঙ্গল', 'বুধ', 'বৃহঃ', 'শুক্র', 'শনি'],
+                months: ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'],
+                daysFull: ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'],
+                tnaSteps: {
+                    destination: '১. Destination',
+                    color: '২. Color Approval',
+                    fitSample: '৩. Fit Sample',
+                    ppSample: '৪. PP Sample',
+                    productionFile: '৫. Production File',
+                    bulkYarn: '৬. Bulk Yarn Inhouse',
+                    knitting: '৭. Knitting',
+                    linking: '৮. Linking',
+                    finishing: '৯. Finishing',
+                    washing: '১০. Washing',
+                    packing: '১১. Packing',
+                    inspection: '১২. Inspection',
+                    shipment: '১৩. Shipment'
+                }
+            },
+            EN: {
+                companyTitle: "Pretty Sweaters Ltd",
+                companySubtitle: "Pretty Sweaters Ltd • Merchandising Management System",
+                btnAddStyle: "Add New Style",
+                btnExcel: "Excel Export",
+                btnZip: "App ZIP",
+                liveClockLabel: "Digital Live Clock",
+                activeOrdersLabel: "Active Styles",
+                upcomingShipLabel: "Upcoming Shipments",
+                calDesc: "Hanging Wall Calendar • Click any date to add notes",
+                calToday: "Today",
+                kpi1Label: "Total Active Styles",
+                kpi1Sub: "Total Styles in Pipeline",
+                kpi2Label: "Total Order Quantity",
+                kpi2Sub: "Total Quantity (Pcs)",
+                kpi3Label: "Total Shipment Value",
+                kpi3Sub: "FOB Total ($ USD)",
+                kpi4Label: "Pending Approvals",
+                kpi4Sub: "Fit, PP, Yarn & Samples",
+                searchPlaceholder: "Search by Style No, Buyer, or Yarn...",
+                stylesMasterTitle: "Sweater Order & Shipment Tracker",
+                stylesCountSuffix: "Styles Displayed",
+                modalTitleAdd: "Add New Style",
+                modalTitleEdit: "Edit Style Details",
+                lblStyleNo: "Style Number *",
+                lblBuyer: "Buyer Name *",
+                lblGauge: "Gauge (GG) *",
+                lblYarn: "Yarn Type & Composition *",
+                lblQty: "Order Quantity (Pcs) *",
+                lblFob: "FOB Price ($ / Pc) *",
+                lblOrderDate: "Order Received Date *",
+                lblShipDate: "Shipment Date *",
+                lblStatus: "Current Stage *",
+                lblImg: "Style Image / Sketch",
+                lblTechpack: "Tech Pack PDF Upload",
+                imgReady: "Image Ready",
+                btnCancel: "Cancel",
+                btnSave: "Save Style",
+                calNoteTitle: "Add Date Note",
+                btnDeleteNote: "Delete Note",
+                btnSaveNote: "Save Note",
+                orderQtyText: "Order Quantity:",
+                fobPriceText: "FOB Price:",
+                totalValText: "Total Value:",
+                shipDateText: "Shipment Date:",
+                techpackLabel: "Tech Pack File:",
+                noTechpack: "No PDF Attached",
+                downloadText: "Download",
+                tnaTitle: "Time & Action (T&A) Critical Path:",
+                days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                daysFull: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+                tnaSteps: {
+                    destination: '1. Destination',
+                    color: '2. Color Approval',
+                    fitSample: '3. Fit Sample',
+                    ppSample: '4. PP Sample',
+                    productionFile: '5. Production File',
+                    bulkYarn: '6. Bulk Yarn Inhouse',
+                    knitting: '7. Knitting',
+                    linking: '8. Linking',
+                    finishing: '9. Finishing',
+                    washing: '10. Washing',
+                    packing: '11. Packing',
+                    inspection: '12. Inspection',
+                    shipment: '13. Shipment'
+                }
+            }
+        };
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'BN' ? 'EN' : 'BN';
+            localStorage.setItem('priti_app_lang', currentLang);
+            applyLanguage();
+        }
+
+        function applyLanguage() {
+            const lang = i18n[currentLang];
+
+            // Header elements
+            document.getElementById('lang-toggle-text').innerText = `Language: ${currentLang === 'BN' ? 'English' : 'বাংলা'}`;
+            document.getElementById('i18n-company-title').innerText = lang.companyTitle;
+            document.getElementById('i18n-company-subtitle').innerText = lang.companySubtitle;
+            document.getElementById('i18n-btn-add-style').innerText = lang.btnAddStyle;
+            document.getElementById('i18n-btn-excel').innerText = lang.btnExcel;
+            document.getElementById('i18n-btn-zip').innerText = lang.btnZip;
+
+            // Widget & Clock labels
+            document.getElementById('i18n-live-clock-label').innerText = lang.liveClockLabel;
+            document.getElementById('i18n-active-orders-label').innerText = lang.activeOrdersLabel;
+            document.getElementById('i18n-upcoming-ship-label').innerText = lang.upcomingShipLabel;
+            document.getElementById('i18n-calendar-desc').innerText = lang.calDesc;
+            document.getElementById('i18n-cal-today').innerText = lang.calToday;
+
+            // KPIs
+            document.getElementById('i18n-kpi-1-label').innerText = lang.kpi1Label;
+            document.getElementById('i18n-kpi-1-sub').innerText = lang.kpi1Sub;
+            document.getElementById('i18n-kpi-2-label').innerText = lang.kpi2Label;
+            document.getElementById('i18n-kpi-2-sub').innerText = lang.kpi2Sub;
+            document.getElementById('i18n-kpi-3-label').innerText = lang.kpi3Label;
+            document.getElementById('i18n-kpi-3-sub').innerText = lang.kpi3Sub;
+            document.getElementById('i18n-kpi-4-label').innerText = lang.kpi4Label;
+            document.getElementById('i18n-kpi-4-sub').innerText = lang.kpi4Sub;
+
+            // Search
+            document.getElementById('search-input').placeholder = lang.searchPlaceholder;
+            document.getElementById('i18n-styles-master-title').innerHTML = `<i class="fa-solid fa-list-check text-cyan-400"></i> ${lang.stylesMasterTitle}`;
+
+            // Modal Labels
+            document.getElementById('i18n-modal-title').innerText = lang.modalTitleAdd;
+            document.getElementById('i18n-lbl-styleno').innerText = lang.lblStyleNo;
+            document.getElementById('i18n-lbl-buyer').innerText = lang.lblBuyer;
+            document.getElementById('i18n-lbl-gauge').innerText = lang.lblGauge;
+            document.getElementById('i18n-lbl-yarn').innerText = lang.lblYarn;
+            document.getElementById('i18n-lbl-qty').innerText = lang.lblQty;
+            document.getElementById('i18n-lbl-fob').innerText = lang.lblFob;
+            document.getElementById('i18n-lbl-orderdate').innerText = lang.lblOrderDate;
+            document.getElementById('i18n-lbl-shipdate').innerText = lang.lblShipDate;
+            document.getElementById('i18n-lbl-status').innerText = lang.lblStatus;
+            document.getElementById('i18n-lbl-img').innerText = lang.lblImg;
+            document.getElementById('i18n-lbl-techpack').innerText = lang.lblTechpack;
+            document.getElementById('i18n-img-ready').innerText = lang.imgReady;
+            document.getElementById('i18n-btn-cancel').innerText = lang.btnCancel;
+            document.getElementById('i18n-btn-save').innerText = lang.btnSave;
+            document.getElementById('i18n-cal-note-title').innerText = lang.calNoteTitle;
+            document.getElementById('i18n-btn-delete-note').innerText = lang.btnDeleteNote;
+            document.getElementById('i18n-btn-save-note').innerText = lang.btnSaveNote;
+
+            updateDigitalClock();
+            renderCalendarDaysHeader();
+            renderCalendar();
+            renderStyleList();
+        }
+
+        const STORAGE_KEY_STYLES = 'priti_sweater_styles_v3';
+        const STORAGE_KEY_NOTES = 'priti_sweater_calendar_notes_v3';
+
+        const initialSampleStyles = [
+            {
+                id: 'style_101',
+                styleNo: 'PSL-7740',
+                buyer: 'H&M Sweden',
+                gauge: '12GG',
+                yarn: '100% Cotton 2/28s Corespun',
+                buttonsZippers: 'Yes (Plastic Buttons)',
+                knittingTime: '45 mins',
+                linkingTime: '20 mins',
+                finishingTime: '15 mins',
+                weight: '320g',
+                quantity: 15000,
+                fob: 7.80,
+                orderDate: '2026-09-15',
+                shipDate: '2026-11-20',
+                status: 'Fit Sample',
+                image: '',
+                techpackName: 'HM_PSL-7740_TechPack.pdf',
+                techpackData: '',
+                destinationCountry: 'Brazil',
+                destinationDepartment: 'Menswear',
+                colors: [{ name: 'Navy Blue', image: '', status: 'Labdip approval', date: '12-Aug-2026' }],
+                fitSampleDate: '12-Aug-2026',
+                fitSampleStatus: 'Approved',
+                ppSampleDate: '15-Aug-2026',
+                ppSampleStatus: 'Pending',
+                productionFileStatus: 'Pending',
+                bulkYarnStatus: 'sample yarn',
+                pcsKnitting: 1200,
+                pcsLinking: 1100,
+                pcsFinishing: 950,
+                pcsWashing: 900,
+                pcsPacking: 850,
+                inspectionStatus: 'Pending',
+                shipmentStatus: 'Pending'
+            }
+        ];
+
+        let styles = JSON.parse(localStorage.getItem(STORAGE_KEY_STYLES)) || initialSampleStyles;
+        let calendarNotes = JSON.parse(localStorage.getItem(STORAGE_KEY_NOTES)) || {
+            '2026-10-15': 'Yarn delivery PSL-7740',
+            '2026-10-22': 'PP Sample Fitting'
+        };
+
+        function saveToStorage() {
+            localStorage.setItem(STORAGE_KEY_STYLES, JSON.stringify(styles));
+            localStorage.setItem(STORAGE_KEY_NOTES, JSON.stringify(calendarNotes));
+        }
+
+        function updateDigitalClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            const timeStr = `${String(hours).padStart(2, '0')}:${minutes}:${seconds} ${ampm}`;
+
+            const lang = i18n[currentLang];
+            const dayName = lang.daysFull[now.getDay()];
+            const dateNum = now.getDate();
+            const monthName = lang.months[now.getMonth()];
+            const yearNum = now.getFullYear();
+
+            const dateStr = currentLang === 'BN' 
+                ? `${dayName}, ${dateNum} ${monthName} ${yearNum}`
+                : `${dayName}, ${monthName} ${dateNum}, ${yearNum}`;
+
+            document.getElementById('digital-clock').innerText = timeStr;
+            document.getElementById('digital-date').innerText = dateStr;
+
+            // Analog Clock Hands Rotation
+            const secDeg = (now.getSeconds() / 60) * 360;
+            const minDeg = (now.getMinutes() / 60) * 360 + (now.getSeconds() / 60) * 6;
+            const hourDeg = ((now.getHours() % 12) / 12) * 360 + (now.getMinutes() / 60) * 30;
+
+            document.getElementById('analog-second').style.transform = `rotate(${secDeg}deg)`;
+            document.getElementById('analog-minute').style.transform = `rotate(${minDeg}deg)`;
+            document.getElementById('analog-hour').style.transform = `rotate(${hourDeg}deg)`;
+        }
+        setInterval(updateDigitalClock, 1000);
+
+        let currentCalendarDate = new Date(2026, 9, 1); // Oct 2026 default
+
+        function renderCalendarDaysHeader() {
+            const headerContainer = document.getElementById('calendar-days-header');
+            const lang = i18n[currentLang];
+            headerContainer.innerHTML = `
+                <div class="text-rose-400">${lang.days[0]}</div>
+                <div>${lang.days[1]}</div>
+                <div>${lang.days[2]}</div>
+                <div>${lang.days[3]}</div>
+                <div>${lang.days[4]}</div>
+                <div>${lang.days[5]}</div>
+                <div class="text-amber-400">${lang.days[6]}</div>
+            `;
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            grid.innerHTML = '';
+
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            const lang = i18n[currentLang];
+
+            document.getElementById('calendar-month-title').innerText = `${lang.months[month]} ${year}`;
+
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
+
+            const today = new Date();
+            const isCurrentMonthNow = today.getFullYear() === year && today.getMonth() === month;
+
+            for (let i = 0; i < firstDayIndex; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = "bg-slate-900/20 rounded-xl border border-slate-800/40 p-1 opacity-20";
+                grid.appendChild(emptyCell);
+            }
+
+            for (let day = 1; day <= totalDaysInMonth; day++) {
+                const dayCell = document.createElement('div');
+                const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const hasNote = calendarNotes[dateKey];
+                const isToday = isCurrentMonthNow && today.getDate() === day;
+
+                dayCell.className = `min-h-[52px] p-1.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between relative group ${
+                    isToday
+                    ? 'bg-sky-500/20 border-sky-400/80 shadow-md shadow-sky-500/20'
+                    : 'bg-slate-900/50 hover:bg-slate-800/80 border-slate-800 hover:border-slate-700'
+                }`;
+
+                dayCell.onclick = () => openCalendarNoteModal(dateKey, hasNote || '');
+
+                dayCell.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold ${isToday ? 'text-sky-300 glow-text' : 'text-slate-300'}">${day}</span>
+                        ${hasNote ? '<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>' : ''}
+                    </div>
+                    ${hasNote ? `<div class="text-[10px] text-amber-200/90 truncate mt-1 bg-amber-950/60 px-1 py-0.5 rounded border border-amber-800/40">${hasNote}</div>` : ''}
+                `;
+
+                grid.appendChild(dayCell);
+            }
+        }
+
+        function changeMonth(delta) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + delta);
+            renderCalendar();
+        }
+
+        function resetToCurrentMonth() {
+            currentCalendarDate = new Date();
+            renderCalendar();
+        }
+
+        function openCalendarNoteModal(dateKey, currentText) {
+            document.getElementById('calendar-note-date-key').value = dateKey;
+            document.getElementById('calendar-note-date-key-display').innerText = dateKey;
+            document.getElementById('calendar-note-text').value = currentText;
+            document.getElementById('calendar-note-modal').classList.remove('hidden');
+        }
+
+        function closeCalendarNoteModal() {
+            document.getElementById('calendar-note-modal').classList.add('hidden');
+        }
+
+        function saveCalendarNote() {
+            const dateKey = document.getElementById('calendar-note-date-key').value;
+            const text = document.getElementById('calendar-note-text').value.trim();
+            if (text) {
+                calendarNotes[dateKey] = text;
+            } else {
+                delete calendarNotes[dateKey];
+            }
+            saveToStorage();
+            renderCalendar();
+            closeCalendarNoteModal();
+        }
+
+        function deleteCalendarNote() {
+            const dateKey = document.getElementById('calendar-note-date-key').value;
+            delete calendarNotes[dateKey];
+            saveToStorage();
+            renderCalendar();
+            closeCalendarNoteModal();
+        }
+
+        function calculateKPIs() {
+            const totalStyles = styles.length;
+            const totalQty = styles.reduce((acc, s) => acc + (parseInt(s.quantity) || 0), 0);
+            const totalValue = styles.reduce((acc, s) => acc + ((parseInt(s.quantity) || 0) * (parseFloat(s.fob) || 0)), 0);
+
+            let pendingCount = 0;
+            styles.forEach(s => {
+                if (s.fitSampleStatus === 'Pending' || s.ppSampleStatus === 'Pending') pendingCount++;
+            });
+
+            document.getElementById('kpi-total-styles').innerText = totalStyles;
+            document.getElementById('kpi-total-qty').innerText = `${totalQty.toLocaleString()} Pcs`;
+            document.getElementById('kpi-total-value').innerText = `$${totalValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('kpi-pending-approvals').innerText = pendingCount;
+
+            document.getElementById('quick-active-orders').innerText = totalStyles;
+            const upcomingShips = styles.filter(s => s.status !== 'Shipped').length;
+            document.getElementById('quick-upcoming-ship').innerText = upcomingShips;
+        }
+
+        function calculateCosting(styleId) {
+            const yarnCost = parseFloat(document.getElementById(`cost-yarn-${styleId}`).value) || 0;
+            const accCost = parseFloat(document.getElementById(`cost-acc-${styleId}`).value) || 0;
+            const cmCost = parseFloat(document.getElementById(`cost-cm-${styleId}`).value) || 0;
+            const overhead = parseFloat(document.getElementById(`cost-oh-${styleId}`).value) || 0;
+
+            const totalSampleCost = yarnCost + accCost + cmCost + overhead;
+            document.getElementById(`cost-result-${styleId}`).innerText = `$${totalSampleCost.toFixed(2)}`;
+        }
+
+        function renderStyleList() {
+            const container = document.getElementById('styles-container');
+            container.innerHTML = '';
+
+            const lang = i18n[currentLang];
+            const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+            const statusFilter = document.getElementById('filter-status').value;
+            const gaugeFilter = document.getElementById('filter-gauge').value;
+
+            const filtered = styles.filter(s => {
+                const matchSearch = s.styleNo.toLowerCase().includes(searchTerm) ||
+                                    s.buyer.toLowerCase().includes(searchTerm) ||
+                                    s.yarn.toLowerCase().includes(searchTerm);
+                const matchStatus = statusFilter === 'ALL' || s.status === statusFilter;
+                const matchGauge = gaugeFilter === 'ALL' || s.gauge === gaugeFilter;
+                return matchSearch && matchStatus && matchGauge;
+            });
+
+            document.getElementById('styles-count-badge').innerText = `${filtered.length} ${lang.stylesCountSuffix}`;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="glass-panel rounded-2xl p-8 text-center text-slate-400">
+                        <i class="fa-solid fa-folder-open text-4xl mb-3 text-slate-600"></i>
+                        <p class="text-sm">No styles found.</p>
+                    </div>
+                `;
+                calculateKPIs();
+                return;
+            }
+
+            filtered.forEach(s => {
+                const totalVal = (parseFloat(s.quantity) || 0) * (parseFloat(s.fob) || 0);
+                const techpackLink = s.techpackData ? s.techpackData : '#';
+
+                const card = document.createElement('div');
+                card.className = "glass-panel rounded-2xl p-5 border border-slate-700/60 space-y-4 hover:border-slate-600 transition-all animate-fade-in-up";
+
+                card.innerHTML = `
+                    <!-- Header -->
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 rounded-xl bg-slate-900 border border-slate-700 overflow-hidden flex items-center justify-center shrink-0">
+                                ${s.image ? `<img src="${s.image}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-shirt text-2xl text-slate-600"></i>`}
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h4 class="text-lg font-extrabold text-white tracking-wide">${s.styleNo}</h4>
+                                    <span class="px-2.5 py-0.5 text-xs font-semibold bg-sky-500/20 text-sky-300 border border-sky-500/30 rounded-full">${s.gauge}</span>
+                                    <span class="px-2.5 py-0.5 text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 rounded-full"><i class="fa-solid fa-user-tag text-xs mr-1 text-slate-400"></i>${s.buyer}</span>
+                                </div>
+                                <p class="text-xs text-slate-300 mt-1"><i class="fa-solid fa-scroll text-slate-400 mr-1"></i> ${s.yarn}</p>
+                            </div>
+                        </div>
+
+                        <!-- Status & Controls -->
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="px-3 py-1 text-xs font-bold rounded-xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 border border-amber-500/30">
+                                <i class="fa-solid fa-spinner animate-spin text-[10px] mr-1"></i> ${s.status}
+                            </span>
+                            <button onclick="editStyle('${s.id}')" class="p-2 text-xs text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl border border-slate-700 transition-all" title="Edit">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button onclick="deleteStyle('${s.id}')" class="p-2 text-xs text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 rounded-xl border border-rose-500/20 transition-all" title="Delete">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Added Style Spec Bar & Costing Calculator -->
+                    <div class="bg-slate-900/80 p-3.5 rounded-xl border border-sky-500/30 space-y-3">
+                        <div class="text-xs font-bold text-cyan-300 flex items-center justify-between">
+                            <span><i class="fa-solid fa-sliders text-sky-400 mr-1"></i> Style Specs & Costing Calculator</span>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 text-[11px]">
+                            <div class="bg-slate-800/60 p-2 rounded-lg"><span class="text-slate-400 block">Style Yarn:</span> <strong class="text-white">${s.yarn}</strong></div>
+                            <div class="bg-slate-800/60 p-2 rounded-lg"><span class="text-slate-400 block">Button/Zipper:</span> <strong class="text-white">${s.buttonsZippers || 'N/A'}</strong></div>
+                            <div class="bg-slate-800/60 p-2 rounded-lg"><span class="text-slate-400 block">Knit Time:</span> <strong class="text-white">${s.knittingTime || 'N/A'}</strong></div>
+                            <div class="bg-slate-800/60 p-2 rounded-lg"><span class="text-slate-400 block">Link Time:</span> <strong class="text-white">${s.linkingTime || 'N/A'}</strong></div>
+                            <div class="bg-slate-800/60 p-2 rounded-lg"><span class="text-slate-400 block">Finish Time:</span> <strong class="text-white">${s.finishingTime || 'N/A'}</strong></div>
+                            <div class="bg-slate-800/60 p-2 rounded-lg"><span class="text-slate-400 block">Weight:</span> <strong class="text-white">${s.weight || 'N/A'}</strong></div>
+                        </div>
+
+                        <!-- Sample Costing Calculator Inputs -->
+                        <div class="pt-2 border-t border-slate-800 grid grid-cols-2 sm:grid-cols-5 gap-2 items-center text-xs">
+                            <input type="number" id="cost-yarn-${s.id}" oninput="calculateCosting('${s.id}')" placeholder="Yarn ($)" class="glass-input p-1.5 rounded-lg text-xs">
+                            <input type="number" id="cost-acc-${s.id}" oninput="calculateCosting('${s.id}')" placeholder="Acc/Trims ($)" class="glass-input p-1.5 rounded-lg text-xs">
+                            <input type="number" id="cost-cm-${s.id}" oninput="calculateCosting('${s.id}')" placeholder="CM Cost ($)" class="glass-input p-1.5 rounded-lg text-xs">
+                            <input type="number" id="cost-oh-${s.id}" oninput="calculateCosting('${s.id}')" placeholder="Overhead ($)" class="glass-input p-1.5 rounded-lg text-xs">
+                            <div class="bg-emerald-500/20 border border-emerald-500/40 p-1.5 rounded-lg text-center font-bold text-emerald-300">
+                                Cost: <span id="cost-result-${s.id}">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Metrics Grid -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-900/40 p-3 rounded-xl border border-slate-800 text-xs">
+                        <div>
+                            <span class="text-slate-400 block">${lang.orderQtyText}</span>
+                            <span class="font-bold text-white text-sm">${parseInt(s.quantity).toLocaleString()} Pcs</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block">${lang.fobPriceText}</span>
+                            <span class="font-bold text-emerald-400 text-sm">$${parseFloat(s.fob).toFixed(2)}</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block">${lang.totalValText}</span>
+                            <span class="font-bold text-emerald-300 text-sm">$${totalVal.toLocaleString(undefined, {minimumFractionDigits:2})}</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block">${lang.shipDateText}</span>
+                            <span class="font-bold text-sky-300 text-sm">${s.shipDate}</span>
+                        </div>
+                    </div>
+
+                    <!-- Tech Pack Attachment Link -->
+                    <div class="flex items-center justify-between text-xs bg-slate-900/60 px-3.5 py-2 rounded-xl border border-slate-800">
+                        <span class="text-slate-400 flex items-center gap-2">
+                            <i class="fa-solid fa-file-pdf text-rose-400 text-sm"></i>
+                            ${lang.techpackLabel} <strong class="text-slate-200 font-medium">${s.techpackName || lang.noTechpack}</strong>
+                        </span>
+                        ${s.techpackName ? `<a href="${techpackLink}" download="${s.techpackName}" class="text-sky-400 hover:text-sky-300 font-semibold flex items-center gap-1"><i class="fa-solid fa-download"></i> ${lang.downloadText}</a>` : '<span class="text-slate-500">N/A</span>'}
+                    </div>
+
+                    <!-- Customized Time & Action Steps (13 Customized Buttons) -->
+                    <div class="pt-2">
+                        <div class="text-xs font-bold text-sky-300 mb-2.5 flex items-center gap-2">
+                            <i class="fa-solid fa-timeline"></i> ${lang.tnaTitle}
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
+                            
+                            <!-- 1. Destination Button -->
+                            <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
+                                <div class="font-semibold text-cyan-300">${lang.tnaSteps.destination}</div>
+                                <div class="grid grid-cols-2 gap-1 text-[11px]">
+                                    <input type="text" value="${s.destinationCountry || ''}" onchange="updateStyleField('${s.id}', 'destinationCountry', this.value)" placeholder="Country..." class="glass-input px-1.5 py-0.5 rounded text-[10px]">
+                                    <input type="text" value="${s.destinationDepartment || ''}" onchange="updateStyleField('${s.id}', 'destinationDepartment', this.value)" placeholder="Dept..." class="glass-input px-1.5 py-0.5 rounded text-[10px]">
+                                </div>
+                            </div>
+
+                            <!-- 2. Color Button (Up to 10 Colors with Ref Pic & Date Dropdown) -->
+                            <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
+                                <div class="font-semibold text-cyan-300 flex justify-between items-center">
+                                    <span>${lang.tnaSteps.color}</span>
+                                    <button onclick="addColorRow('${s.id}')" class="text-[10px] text-sky-400 hover:underline">+ Add Color</button>
+                                </div>
+                                <div class="space-y-1 max-h-24 overflow-y-auto custom-scrollbar">
+                                    ${(s.colors || []).map((c, idx) => `
+                                        <div class="p-1 bg-slate-900/60 rounded border border-slate-800 space-y-0.5 text-[10px]">
+                                            <input type="text" value="${c.name || ''}" onchange="updateColorName('${s.id}',${idx}, this.value)" placeholder="Color name..." class="glass-input w-full px-1 py-0.5 rounded">
+                                            <select onchange="updateColorStatus('${s.id}',${idx}, this.value)" class="glass-input w-full px-1 py-0.5 rounded bg-slate-900">
+                                                <option value="Labdip request" ${c.status==='Labdip request'?'selected':''}>Labdip request</option>
+                                                <option value="Labdip submitted" ${c.status==='Labdip submitted'?'selected':''}>Labdip submitted</option>
+                                                <option value="Labdip approval" ${c.status==='Labdip approval'?'selected':''}>Labdip approval</option>
+                                                <option value="Re-submitted" ${c.status==='Re-submitted'?'selected':''}>Re-submitted</option>
+                                            </select>
+                                            <input type="text" value="${c.date || '12-Aug-2026'}" onchange="updateColorDate('${s.id}',${idx}, this.value)" placeholder="12-Aug-2026" class="glass-input w-full px-1 py-0.5 rounded glowing-date-text">
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <!-- 3. Fit Sample Button -->
+                            <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
+                                <div class="font-semibold text-cyan-300">${lang.tnaSteps.fitSample}</div>
+                                <select onchange="updateStyleField('${s.id}', 'fitSampleStatus', this.value)" class="glass-input w-full px-1.5 py-0.5 rounded text-[11px] bg-slate-900">
+                                    <option value="Pending" ${s.fitSampleStatus==='Pending'?'selected':''}>Pending</option>
+                                    <option value="Submitted" ${s.fitSampleStatus==='Submitted'?'selected':''}>Submitted</option>
+                                    <option value="Approved" ${s.fitSampleStatus==='Approved'?'selected':''}>Approved</option>
+                                    <option value="Re-submitted" ${s.fitSampleStatus==='Re-submitted'?'selected':''}>Re-submitted</option>
+                                </select>
+                                <input type="text" value="${s.fitSampleDate || '12-Aug-2026'}" onchange="updateStyleField('${s.id}', 'fitSampleDate', this.value)" placeholder="12-Aug-2026" class="glass-input w-full px-1.5 py-0.5 rounded glowing-date-text text-[11px]">
+                            </div>
+
+                            <!-- 4. PP Sample Button -->
+                            <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
+                                <div class="font-semibold text-cyan-300">${lang.tnaSteps.ppSample}</div>
+                                <select onchange="updateStyleField('${s.id}', 'ppSampleStatus', this.value)" class="glass-input w-full px-1.5 py-0.5 rounded text-[11px] bg-slate-900">
+                                    <option value="Pending" ${s.ppSampleStatus==='Pending'?'selected':''}>Pending</option>
+                                    <option value="Submitted" ${s.ppSampleStatus==='Submitted'?'selected':''}>Submitted</option>
+                                    <option value="Approved" ${s.ppSampleStatus==='Approved'?'selected':''}>Approved</option>
+                                    <option value="Re-submitted" ${s.ppSampleStatus==='Re-submitted'?'selected':''}>Re-submitted</option>
+                                </select>
+                                <input type="text" value="${s.ppSampleDate || '12-Aug-2026'}" onchange="updateStyleField('${s.id}', 'ppSampleDate', this.value)" placeholder="12-Aug-2026" class="glass-input w-full px-1.5 py-0.5 rounded glowing-date-text text-[11px]">
+                            </div>
+
+                            <!-- 5. Production File Button -->
+                            <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
+                                <div class="font-semibold text-cyan-300">${lang.tnaSteps.productionFile}</div>
+                                <select onchange="updateStyleField('${s.id}', 'productionFileStatus', this.value)" class="glass-input w-full px-1.5 py-0.5 rounded text-[11px] bg-slate-900">
+                                    <option value="Pending" ${s.productionFileStatus==='Pending'?'selected':''}>1. Pending</option>
+                                    <option value="Hand Over Done" ${s.productionFileStatus==='Hand Over Done'?'selected':''}>2. Hand Over Done</option>
+                                </select>
+                            </div>
+
+                            <!-- 6. Bulk Yarn Inhouse Button -->
+                            <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
+                                <div class="font-semibold text-cyan-300">${lang.tnaSteps.bulkYarn}</div>
+                                <select onchange="updateStyleField('${s.id}', 'bulkYarnStatus', this.value)" class="glass-input w-full px-1.5 py-0.5 rounded text-[11px] bg-slate-900">
+                                    <option value="sample yarn" ${s.bulkYarnStatus==='sample yarn'?'selected':''}>1. Sample Yarn</option>
+                                    <option value="bulk partial" ${s.bulkYarnStatus==='bulk partial'?'selected':''}>2. Bulk Partial</option>
+                                    <option value="full inhoused" ${s.bulkYarnStatus==='full inhoused'?'selected':''}>3. Full Inhoused</option>
+                                </select>
+                            </div>
+
+                            <!-- 7. Knitting (Manual Pcs) -->
+                            <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
+                                <div class="font-semibold text-cyan-300">${lang.tnaSteps.knitting} (Pcs)</div>
+                                <input type="number" value="${s.pcsKnitting || 0}" onchange="updateStyleField('${s.id}', 'pcsKnitting', parseInt(this.value))" placeholder="Pcs..." class="glass-input w-full px-1.5 py-0.5 rounded text-[11px]">
+                            </div>
+
+                            <!-- 8. Linking (Manual Pcs) -->
+                            <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
+                                <div class="font-semibold text-cyan-300">${lang.tnaSteps.linking} (Pcs)</div>
+                                <input type="number" value="${s.pcsLinking || 0}" onchange="updateStyleField('${s.id}', 'pcsLinking', parseInt(this.value))" placeholder="Pcs..." class="glass-input w-full px-1.5 py-0.5 rounded text-[11px]">
+                            </div>
+
+                            <!-- 9. Finishing (Manual Pcs) -->
+                            <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
+                                <div class="font-semibold text-cyan-300">${lang.tnaSteps.finishing} (Pcs)</div>
+                                <input type="number" value="${s.pcsFinishing || 0}" onchange="updateStyleField('${s.id}', 'pcsFinishing', parseInt(this.value))" placeholder="Pcs..." class="glass-input w-full px-1.5 py-0.5 rounded text-[11px]">
+                            </div>
+
+                            <!-- 10. Washing (Manual Pcs) -->
+                            <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
+                                <div class="font-semibold text-cyan-300">${lang.tnaSteps.washing} (Pcs)</div>
+                                <input type="number" value="${s.pcsWashing || 0}" onchange="updateStyleField('${s.id}', 'pcsWashing', parseInt(this.value))" placeholder="Pcs..." class="glass-input w-full px-1.5 py-0.5 rounded text-[11px]">
+                            </div>
+
+                            <!-- 11. Packing (Manual Pcs) -->
+                            <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
+                                <div class="font-semibold text-cyan-300">${lang.tnaSteps.packing} (Pcs)</div>
+                                <input type="number" value="${s.pcsPacking || 0}" onchange="updateStyleField('${s.id}', 'pcsPacking', parseInt(this.value))" placeholder="Pcs..." class="glass-input w-full px-1.5 py-0.5 rounded text-[11px]">
+                            </div>
+
+                            <!-- 12. Inspection Button -->
+                            <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
+                                <div class="font-semibold text-cyan-300">${lang.tnaSteps.inspection}</div>
+                                <select onchange="updateStyleField('${s.id}', 'inspectionStatus', this.value)" class="glass-input w-full px-1.5 py-0.5 rounded text-[11px] bg-slate-900">
+                                    <option value="Pending" ${s.inspectionStatus==='Pending'?'selected':''}>Pending</option>
+                                    <option value="FRI Passed" ${s.inspectionStatus==='FRI Passed'?'selected':''}>FRI Passed</option>
+                                    <option value="Re-inspection" ${s.inspectionStatus==='Re-inspection'?'selected':''}>Re-inspection</option>
+                                </select>
+                            </div>
+
+                            <!-- 13. Shipment Button -->
+                            <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
+                                <div class="font-semibold text-cyan-300">${lang.tnaSteps.shipment}</div>
+                                <select onchange="updateStyleField('${s.id}', 'shipmentStatus', this.value)" class="glass-input w-full px-1.5 py-0.5 rounded text-[11px] bg-slate-900">
+                                    <option value="Pending" ${s.shipmentStatus==='Pending'?'selected':''}>Pending</option>
+                                    <option value="Partial Shipped" ${s.shipmentStatus==='Partial Shipped'?'selected':''}>Partial Shipped</option>
+                                    <option value="Shipped" ${s.shipmentStatus==='Shipped'?'selected':''}>Fully Shipped</option>
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+
+            calculateKPIs();
+        }
+
+        function updateStyleField(styleId, field, value) {
+            const style = styles.find(s => s.id === styleId);
+            if (style) {
+                style[field] = value;
+                saveToStorage();
+            }
+        }
+
+        function addColorRow(styleId) {
+            const style = styles.find(s => s.id === styleId);
+            if (style) {
+                if (!style.colors) style.colors = [];
+                if (style.colors.length < 10) {
+                    style.colors.push({ name: '', image: '', status: 'Labdip request', date: '12-Aug-2026' });
+                    saveToStorage();
+                    renderStyleList();
+                } else {
+                    alert('Maximum 10 colors allowed!');
+                }
+            }
+        }
+
+        function updateColorName(styleId, idx, val) {
+            const style = styles.find(s => s.id === styleId);
+            if (style && style.colors[idx]) {
+                style.colors[idx].name = val;
+                saveToStorage();
+            }
+        }
+
+        function updateColorStatus(styleId, idx, val) {
+            const style = styles.find(s => s.id === styleId);
+            if (style && style.colors[idx]) {
+                style.colors[idx].status = val;
+                saveToStorage();
+            }
+        }
+
+        function updateColorDate(styleId, idx, val) {
+            const style = styles.find(s => s.id === styleId);
+            if (style && style.colors[idx]) {
+                style.colors[idx].date = val;
+                saveToStorage();
+            }
+        }
+
+        function openNewStyleModal() {
+            document.getElementById('i18n-modal-title').innerText = i18n[currentLang].modalTitleAdd;
+            document.getElementById('style-form').reset();
+            document.getElementById('form-style-id').value = '';
+            document.getElementById('form-image-base64').value = '';
+            document.getElementById('form-techpack-data').value = '';
+            document.getElementById('form-techpack-name').value = '';
+            document.getElementById('image-preview-container').classList.add('hidden');
+            document.getElementById('style-modal').classList.remove('hidden');
+        }
+
+        function closeStyleModal() {
+            document.getElementById('style-modal').classList.add('hidden');
+        }
+
+        function editStyle(id) {
+            const style = styles.find(s => s.id === id);
+            if (!style) return;
+
+            document.getElementById('i18n-modal-title').innerText = i18n[currentLang].modalTitleEdit;
+            document.getElementById('form-style-id').value = style.id;
+            document.getElementById('form-style-no').value = style.styleNo;
+            document.getElementById('form-buyer').value = style.buyer;
+            document.getElementById('form-gauge').value = style.gauge;
+            document.getElementById('form-yarn').value = style.yarn;
+            document.getElementById('form-quantity').value = style.quantity;
+            document.getElementById('form-fob').value = style.fob;
+            document.getElementById('form-order-date').value = style.orderDate;
+            document.getElementById('form-ship-date').value = style.shipDate;
+            document.getElementById('form-status').value = style.status;
+
+            document.getElementById('form-image-base64').value = style.image || '';
+            document.getElementById('form-techpack-name').value = style.techpackName || '';
+            document.getElementById('form-techpack-data').value = style.techpackData || '';
+
+            if (style.image) {
+                document.getElementById('image-preview').src = style.image;
+                document.getElementById('image-preview-container').classList.remove('hidden');
+            } else {
+                document.getElementById('image-preview-container').classList.add('hidden');
+            }
+
+            document.getElementById('style-modal').classList.remove('hidden');
+        }
+
+        function deleteStyle(id) {
+            if (confirm('Delete this style permanently?')) {
+                styles = styles.filter(s => s.id !== id);
+                saveToStorage();
+                renderStyleList();
+            }
+        }
+
+        function handleImagePreview(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    document.getElementById('form-image-base64').value = evt.target.result;
+                    document.getElementById('image-preview').src = evt.target.result;
+                    document.getElementById('image-preview-container').classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleTechpackFile(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('form-techpack-name').value = file.name;
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    document.getElementById('form-techpack-data').value = evt.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleStyleSubmit(e) {
+            e.preventDefault();
+
+            const id = document.getElementById('form-style-id').value || 'style_' + Date.now();
+            const existingIndex = styles.findIndex(s => s.id === id);
+
+            const styleObj = {
+                id: id,
+                styleNo: document.getElementById('form-style-no').value,
+                buyer: document.getElementById('form-buyer').value,
+                gauge: document.getElementById('form-gauge').value,
+                yarn: document.getElementById('form-yarn').value,
+                quantity: parseInt(document.getElementById('form-quantity').value),
+                fob: parseFloat(document.getElementById('form-fob').value),
+                orderDate: document.getElementById('form-order-date').value,
+                shipDate: document.getElementById('form-ship-date').value,
+                status: document.getElementById('form-status').value,
+                image: document.getElementById('form-image-base64').value,
+                techpackName: document.getElementById('form-techpack-name').value,
+                techpackData: document.getElementById('form-techpack-data').value,
+                buttonsZippers: existingIndex >= 0 ? styles[existingIndex].buttonsZippers : 'Yes',
+                knittingTime: existingIndex >= 0 ? styles[existingIndex].knittingTime : '40 mins',
+                linkingTime: existingIndex >= 0 ? styles[existingIndex].linkingTime : '20 mins',
+                finishingTime: existingIndex >= 0 ? styles[existingIndex].finishingTime : '15 mins',
+                weight: existingIndex >= 0 ? styles[existingIndex].weight : '300g',
+                destinationCountry: existingIndex >= 0 ? styles[existingIndex].destinationCountry : '',
+                destinationDepartment: existingIndex >= 0 ? styles[existingIndex].destinationDepartment : '',
+                colors: existingIndex >= 0 ? styles[existingIndex].colors : [],
+                fitSampleDate: '12-Aug-2026',
+                fitSampleStatus: 'Pending',
+                ppSampleDate: '12-Aug-2026',
+                ppSampleStatus: 'Pending',
+                productionFileStatus: 'Pending',
+                bulkYarnStatus: 'sample yarn',
+                pcsKnitting: 0,
+                pcsLinking: 0,
+                pcsFinishing: 0,
+                pcsWashing: 0,
+                pcsPacking: 0,
+                inspectionStatus: 'Pending',
+                shipmentStatus: 'Pending'
+            };
+
+            if (existingIndex >= 0) {
+                styles[existingIndex] = styleObj;
+            } else {
+                styles.unshift(styleObj);
+            }
+
+            saveToStorage();
+            renderStyleList();
+            closeStyleModal();
+        }
+
+        function resetFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('filter-status').value = 'ALL';
+            document.getElementById('filter-gauge').value = 'ALL';
+            renderStyleList();
+        }
+
+        function exportStylesCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Style No,Buyer,Gauge,Yarn Composition,Quantity (Pcs),FOB ($),Total Value ($),Order Date,Ship Date,Status\n";
+
+            styles.forEach(s => {
+                const totalVal = (s.quantity || 0) * (s.fob || 0);
+                const row = `"${s.styleNo}","${s.buyer}","${s.gauge}","${s.yarn.replace(/"/g, '""')}","${s.quantity}","${s.fob}","${totalVal}","${s.orderDate}","${s.shipDate}","${s.status}"`;
+                csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Pretty_Sweaters_Ltd_Styles_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function downloadZipApp() {
+            const zip = new JSZip();
+            const currentHTML = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+
+            zip.file("index.html", currentHTML);
+            zip.file("README.txt", "Pretty Sweaters Ltd - Merchandising Portal\nSingle-file runnable web app with English and Bangla support.");
+
+            zip.generateAsync({ type: "blob" }).then(function (content) {
+                saveAs(content, "Pretty_Sweaters_Ltd_Merchandising_Portal.zip");
+            });
+        }
+
+        window.onload = function() {
+            applyLanguage();
+        };
+    </script>
+
+</body></html>
