@@ -8,6 +8,7 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts: Inter & Hind Siliguri -->
@@ -1004,62 +1005,162 @@
     </div>
 
     <script>
-        // Multi-User Symbolic Credentials List (5 Users)
-        const validUsers = {
-            "mridul": "m123",       // 1. Mridul kumar shaha
-            "shafikul": "s123",     // 2. Shafikul islam rasel
-            "rounek": "r123",       // 3. Rounek rahman
-            "solaiman": "s456",     // 4. Solaiman hossen
-            "raihan": "r456"        // 5. Raihan jamil
+        // Team login uses Firebase Authentication. Create these five accounts in Firebase Console.
+        // Usernames are mapped to email aliases; passwords are never stored in this HTML file.
+        const usernameEmailMap = {
+            "mridul": "mridul@prettysweaters.com",
+            "shafikul": "shafikul@prettysweaters.com",
+            "rounek": "rounek@prettysweaters.com",
+            "solaiman": "solaiman@prettysweaters.com",
+            "raihan": "raihan@prettysweaters.com"
         };
 
-        function handleLogin(e) {
+        let authReady = false;
+        let cloudReady = false;
+        let cloudLoading = false;
+        let stylesRef = null;
+        let notesRef = null;
+        let stylesListenerAttached = false;
+        let notesListenerAttached = false;
+
+        async function handleLogin(e) {
             e.preventDefault();
             const u = document.getElementById('login-username').value.trim().toLowerCase();
-            const p = document.getElementById('login-password').value.trim();
+            const p = document.getElementById('login-password').value;
             const errDiv = document.getElementById('login-error');
-
-            if (validUsers[u] && validUsers[u] === p) {
-                localStorage.setItem('priti_logged_user', u);
-                document.getElementById('login-overlay').classList.add('hidden');
-                document.getElementById('current-user-display').innerText = u.toUpperCase();
-            } else {
+            errDiv.classList.add('hidden');
+            if (!usernameEmailMap[u]) {
+                errDiv.innerText = 'Username or password is incorrect.';
+                errDiv.classList.remove('hidden');
+                return;
+            }
+            try {
+                await firebase.auth().signInWithEmailAndPassword(usernameEmailMap[u], p);
+            } catch (error) {
+                console.error('Firebase login failed:', error);
+                errDiv.innerText = error.code === 'auth/too-many-requests'
+                    ? 'Too many attempts. Please try again later.'
+                    : 'Login failed. Check your username/password or ask the administrator to create your Firebase account.';
                 errDiv.classList.remove('hidden');
             }
         }
 
-        function handleLogout() {
-            localStorage.removeItem('priti_logged_user');
+        async function handleLogout() {
+            try { await firebase.auth().signOut(); }
+            catch (error) { console.error('Firebase logout failed:', error); }
             document.getElementById('login-username').value = '';
             document.getElementById('login-password').value = '';
             document.getElementById('login-error').classList.add('hidden');
             document.getElementById('login-overlay').classList.remove('hidden');
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const loggedUser = localStorage.getItem('priti_logged_user');
-            if (loggedUser && validUsers[loggedUser]) {
-                document.getElementById('login-overlay').classList.add('hidden');
-                document.getElementById('current-user-display').innerText = loggedUser.toUpperCase();
-            } else {
-                document.getElementById('login-overlay').classList.remove('hidden');
+        function showLoginError(message) {
+            const errDiv = document.getElementById('login-error');
+            if (errDiv) {
+                errDiv.innerText = message;
+                errDiv.classList.remove('hidden');
             }
-        });
+        }
 
-        // Firebase Config
+        function renderAfterCloudLoad() {
+            try {
+                calculateKPIs();
+                renderCalendar();
+                renderStyleList();
+            } catch (e) {
+                console.warn('Portal render will continue through normal page initialization.', e);
+            }
+        }
+
+        // Firebase Config - Smart Merch project
         const firebaseConfig = {
-            apiKey: "AIzaSyBNSZN8Xud3MDtP-1JujurZjp2Wm3EBDCs",
-            authDomain: "merch-calendar-59467.firebaseapp.com",
-            databaseURL: "https://merch-calendar-59467-default-rtdb.firebaseio.com",
-            projectId: "merch-calendar-59467",
-            storageBucket: "merch-calendar-59467.firebasestorage.app",
-            messagingSenderId: "291416023418",
-            appId: "1:291416023418:web:8798be470882e72087f6c3"
+            apiKey: "AIzaSyAo8UOQY5tv-k4OkooYxLebZiimmIYaqZk",
+            authDomain: "smart-merch-f4f9d.firebaseapp.com",
+            databaseURL: "https://smart-merch-f4f9d-default-rtdb.firebaseio.com",
+            projectId: "smart-merch-f4f9d",
+            storageBucket: "smart-merch-f4f9d.firebasestorage.app",
+            messagingSenderId: "979487907780",
+            appId: "1:979487907780:web:7686e1529d5f9060534e91"
         };
 
-        // Initialize Firebase (Compat mode)
-        firebase.initializeApp(firebaseConfig);
+        // Initialize Firebase App, Authentication, and Realtime Database.
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+        const auth = firebase.auth();
+        stylesRef = database.ref('sharedPortal/styles');
+        notesRef = database.ref('sharedPortal/calendarNotes');
+
+        function attachCloudSync() {
+            if (!auth.currentUser || stylesListenerAttached || notesListenerAttached) return;
+            cloudLoading = true;
+            cloudReady = false;
+            Promise.all([stylesRef.once('value'), notesRef.once('value')]).then(([styleSnap, noteSnap]) => {
+                if (styleSnap.exists()) {
+                    styles = styleSnap.val() || [];
+                } else {
+                    // Seed cloud data only when the shared database path is empty.
+                    awaitableSet(stylesRef, styles);
+                }
+                if (noteSnap.exists()) {
+                    calendarNotes = noteSnap.val() || {};
+                } else {
+                    awaitableSet(notesRef, calendarNotes);
+                }
+                cloudLoading = false;
+                cloudReady = true;
+                renderAfterCloudLoad();
+                if (!stylesListenerAttached) {
+                    stylesListenerAttached = true;
+                    stylesRef.on('value', snap => {
+                        if (!snap.exists()) return;
+                        const next = snap.val() || [];
+                        if (JSON.stringify(next) !== JSON.stringify(styles)) {
+                            styles = next;
+                            localStorage.setItem(STORAGE_KEY_STYLES, JSON.stringify(styles));
+                            if (cloudReady) renderAfterCloudLoad();
+                        }
+                    }, err => console.error('Styles sync error:', err));
+                }
+                if (!notesListenerAttached) {
+                    notesListenerAttached = true;
+                    notesRef.on('value', snap => {
+                        if (!snap.exists()) return;
+                        const next = snap.val() || {};
+                        if (JSON.stringify(next) !== JSON.stringify(calendarNotes)) {
+                            calendarNotes = next;
+                            localStorage.setItem(STORAGE_KEY_NOTES, JSON.stringify(calendarNotes));
+                            if (cloudReady) renderAfterCloudLoad();
+                        }
+                    }, err => console.error('Calendar sync error:', err));
+                }
+            }).catch(error => {
+                cloudLoading = false;
+                console.error('Unable to load shared portal data:', error);
+                showLoginError('Signed in, but shared data could not be loaded. Check Firebase Database Rules and connection.');
+            });
+        }
+
+        function awaitableSet(ref, value) {
+            ref.set(value).catch(error => console.error('Initial cloud data save failed:', error));
+        }
+
+        auth.onAuthStateChanged(user => {
+            authReady = true;
+            if (user) {
+                const email = (user.email || '').toLowerCase();
+                const username = Object.keys(usernameEmailMap).find(key => usernameEmailMap[key] === email) || email.split('@')[0];
+                localStorage.setItem('priti_logged_user', username);
+                document.getElementById('login-overlay').classList.add('hidden');
+                document.getElementById('current-user-display').innerText = username.toUpperCase();
+                attachCloudSync();
+            } else {
+                localStorage.removeItem('priti_logged_user');
+                document.getElementById('login-overlay').classList.remove('hidden');
+                cloudReady = false;
+                if (stylesListenerAttached) { stylesRef.off(); stylesListenerAttached = false; }
+                if (notesListenerAttached) { notesRef.off(); notesListenerAttached = false; }
+            }
+        });
 
         let currentLang = localStorage.getItem('priti_app_lang') || 'BN';
         const i18n = {
@@ -1316,6 +1417,17 @@
         function saveToStorage() {
             localStorage.setItem(STORAGE_KEY_STYLES, JSON.stringify(styles));
             localStorage.setItem(STORAGE_KEY_NOTES, JSON.stringify(calendarNotes));
+            // All authenticated team members share the same cloud records.
+            if (cloudReady && auth.currentUser && !cloudLoading) {
+                stylesRef.set(styles).catch(error => {
+                    console.error('Could not save styles to Firebase:', error);
+                    alert('Firebase-এ স্টাইল সেভ হয়নি। ইন্টারনেট ও Database Rules পরীক্ষা করুন।');
+                });
+                notesRef.set(calendarNotes).catch(error => {
+                    console.error('Could not save calendar notes to Firebase:', error);
+                    alert('Firebase-এ ক্যালেন্ডার নোট সেভ হয়নি। ইন্টারনেট ও Database Rules পরীক্ষা করুন।');
+                });
+            }
         }
 
         function updateDigitalClock() {
