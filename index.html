@@ -78,6 +78,23 @@
             box-shadow: 0 0 15px rgba(56, 189, 248, 0.35);
         }
 
+        /* 3D Styled PG Logo CSS */
+        .pg-logo-3d {
+            font-size: 24px;
+            font-weight: 900;
+            color: #ffffff;
+            background: linear-gradient(135deg, #38bdf8, #0284c7);
+            padding: 8px 12px;
+            border-radius: 12px;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 0px #0369a1, 4px 4px 0px #0c4a6e;
+            box-shadow: 0 6px 12px rgba(14, 165, 233, 0.4), inset 0 1px 0 rgba(255,255,255,0.4);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(56, 189, 248, 0.5);
+        }
+
         /* Neon Glow Clock */
         .neon-clock {
             color: #00f0ff;
@@ -171,10 +188,10 @@
     <!-- Login Screen Overlay -->
     <div id="login-overlay" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 flex items-center justify-center p-4">
         <div class="glass-panel w-full max-w-md rounded-2xl border border-slate-700/80 p-8 shadow-2xl animate-fade-in-up space-y-6">
-            <div class="text-center space-y-2">
-                <!-- PG Logo Image replacing lock symbol -->
-                <div class="w-20 h-20 rounded-2xl bg-slate-900/80 flex items-center justify-center border border-sky-400/30 p-2 mx-auto shadow-lg shadow-sky-500/20">
-                    <img src="Gemini_Generated_Image_qu44c4qu44c4qu44.jpg" alt="Pretty Group Logo" class="w-full h-full object-contain rounded-xl">
+            <div class="text-center space-y-3">
+                <!-- 3D PG Logo for Login Screen -->
+                <div class="flex justify-center">
+                    <div class="pg-logo-3d text-2xl">PG</div>
                 </div>
                 <h2 class="text-xl font-extrabold text-white">Pretty Sweaters Ltd Portal</h2>
                 <p class="text-xs text-sky-300/80">Please enter your credentials to access</p>
@@ -217,12 +234,9 @@
     <header class="sticky top-0 z-40 glass-panel border-b border-slate-700/50 px-4 lg:px-8 py-3.5">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             
-            <!-- Brand Logo & Title -->
+            <!-- Brand Logo & Title with 3D PG Logo -->
             <div class="flex items-center gap-3.5">
-                <!-- Replacement of garment picture box with PG Logo -->
-                <div class="w-12 h-12 rounded-2xl bg-slate-900 border border-cyan-400/40 p-1 flex items-center justify-center shadow-lg shadow-cyan-500/30">
-                    <img src="Gemini_Generated_Image_qu44c4qu44c4qu44.jpg" alt="PG Logo" class="w-full h-full object-contain rounded-xl">
-                </div>
+                <div class="pg-logo-3d">PG</div>
                 <div>
                     <h1 id="i18n-company-title" class="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-sky-200 via-cyan-100 to-white">Pretty Sweaters Ltd</h1>
                     <p id="i18n-company-subtitle" class="text-xs text-sky-300/80 font-medium tracking-wide">Pretty Sweaters Ltd • Merchandising Management System</p>
@@ -364,6 +378,59 @@
                 <div id="calendar-grid" class="grid grid-cols-7 gap-1.5 min-h-[220px]"></div>
             </div>
 
+        </div>
+
+        <!-- Development Sample Tracker Section Added Here -->
+        <div class="glass-panel rounded-2xl p-6 relative animate-fade-in-up border border-cyan-500/30">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-700/60 pb-3">
+                <h3 class="text-lg font-bold text-cyan-300 flex items-center gap-2">
+                    <i class="fa-solid fa-clipboard-list text-cyan-400"></i> ডেভেলপমেন্ট স্যামপল ট্র্যাকার (Development Sample Tracker)
+                </h3>
+            </div>
+
+            <!-- Tracker Form Inputs -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">টেকফাইল পাওয়ার তারিখ *</label>
+                    <input type="date" id="tracker-tech-date" class="w-full glass-input px-3 py-2 rounded-xl text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">রিকুইজিশন তারিখ *</label>
+                    <input type="date" id="tracker-req-date" class="w-full glass-input px-3 py-2 rounded-xl text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">বায়ারের কাছে পাঠানোর তারিখ *</label>
+                    <input type="date" id="tracker-buyer-date" class="w-full glass-input px-3 py-2 rounded-xl text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">টেকফাইল পিডিএফ (PDF) সংযুক্তি</label>
+                    <input type="file" id="tracker-pdf-file" accept=".pdf" class="w-full glass-input px-2.5 py-1.5 rounded-xl text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-sky-500/20 file:text-sky-300">
+                </div>
+            </div>
+
+            <div class="flex justify-end mb-6">
+                <button onclick="addDevTrackerRecord()" class="px-5 py-2 text-xs font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 rounded-xl shadow-lg shadow-cyan-500/20 transition-all flex items-center gap-2 border border-cyan-400/30">
+                    <i class="fa-solid fa-plus"></i> রেকর্ড যুক্ত করুন
+                </button>
+            </div>
+
+            <!-- Tracker Table -->
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-slate-900/90 text-sky-300 border-b border-slate-700">
+                            <th class="p-3 font-semibold">টেকফাইল পাওয়ার তারিখ</th>
+                            <th class="p-3 font-semibold">রিকুইজিশন তারিখ</th>
+                            <th class="p-3 font-semibold">বায়ারের কাছে পাঠানোর তারিখ</th>
+                            <th class="p-3 font-semibold">সংযুক্ত টেকফাইল (PDF)</th>
+                            <th class="p-3 font-semibold text-center">অ্যাকশন</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dev-tracker-table-body" class="divide-y divide-slate-800">
+                        <!-- Dynamic Records Will Appear Here -->
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -650,6 +717,7 @@
             } else {
                 document.getElementById('login-overlay').classList.remove('hidden');
             }
+            renderDevTrackerRecords();
         });
 
         // Firebase Config
@@ -873,6 +941,7 @@
 
         const STORAGE_KEY_STYLES = 'priti_sweater_styles_v3';
         const STORAGE_KEY_NOTES = 'priti_sweater_calendar_notes_v3';
+        const STORAGE_KEY_DEV_TRACKER = 'priti_dev_sample_tracker_records';
 
         const initialSampleStyles = [
             {
@@ -918,10 +987,108 @@
             '2026-10-15': 'Yarn delivery PSL-7740',
             '2026-10-22': 'PP Sample Fitting'
         };
+        let devTrackerRecords = JSON.parse(localStorage.getItem(STORAGE_KEY_DEV_TRACKER)) || [
+            {
+                id: 'dev_1',
+                techDate: '2026-10-01',
+                reqDate: '2026-10-03',
+                buyerDate: '2026-10-08',
+                pdfName: 'TechPack_Sample_01.pdf',
+                pdfData: ''
+            }
+        ];
 
         function saveToStorage() {
             localStorage.setItem(STORAGE_KEY_STYLES, JSON.stringify(styles));
             localStorage.setItem(STORAGE_KEY_NOTES, JSON.stringify(calendarNotes));
+            localStorage.setItem(STORAGE_KEY_DEV_TRACKER, JSON.stringify(devTrackerRecords));
+        }
+
+        // Development Sample Tracker Functions
+        function addDevTrackerRecord() {
+            const techDate = document.getElementById('tracker-tech-date').value;
+            const reqDate = document.getElementById('tracker-req-date').value;
+            const buyerDate = document.getElementById('tracker-buyer-date').value;
+            const pdfInput = document.getElementById('tracker-pdf-file');
+
+            if (!techDate || !reqDate || !buyerDate) {
+                alert('দয়া করে সব কয়টি তারিখ পূরণ করুন!');
+                return;
+            }
+
+            let pdfName = 'N/A';
+            let pdfData = '';
+
+            if (pdfInput.files && pdfInput.files[0]) {
+                pdfName = pdfInput.files[0].name;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    pdfData = e.target.result;
+                    finalizeDevRecord(techDate, reqDate, buyerDate, pdfName, pdfData);
+                };
+                reader.readAsDataURL(pdfInput.files[0]);
+            } else {
+                finalizeDevRecord(techDate, reqDate, buyerDate, pdfName, pdfData);
+            }
+        }
+
+        function finalizeDevRecord(techDate, reqDate, buyerDate, pdfName, pdfData) {
+            const newRecord = {
+                id: 'dev_' + Date.now(),
+                techDate,
+                reqDate,
+                buyerDate,
+                pdfName,
+                pdfData
+            };
+
+            devTrackerRecords.unshift(newRecord);
+            saveToStorage();
+            renderDevTrackerRecords();
+
+            // Reset inputs
+            document.getElementById('tracker-tech-date').value = '';
+            document.getElementById('tracker-req-date').value = '';
+            document.getElementById('tracker-buyer-date').value = '';
+            document.getElementById('tracker-pdf-file').value = '';
+        }
+
+        function deleteDevTrackerRecord(id) {
+            if (confirm('এই রেকর্ডটি মুছে ফেলতে চান?')) {
+                devTrackerRecords = devTrackerRecords.filter(r => r.id !== id);
+                saveToStorage();
+                renderDevTrackerRecords();
+            }
+        }
+
+        function renderDevTrackerRecords() {
+            const tbody = document.getElementById('dev-tracker-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            if (devTrackerRecords.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">কোনো ডেভলপমেন্ট স্যামপল রেকর্ড নেই।</td></tr>`;
+                return;
+            }
+
+            devTrackerRecords.forEach(r => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/40 transition-all";
+                const pdfLinkHtml = r.pdfData ? `<a href="${r.pdfData}" download="${r.pdfName}" class="text-sky-400 hover:text-sky-300 font-semibold flex items-center gap-1.5"><i class="fa-solid fa-file-pdf text-rose-400"></i> ${r.pdfName}</a>` : `<span class="text-slate-500">${r.pdfName}</span>`;
+
+                tr.innerHTML = `
+                    <td class="p-3 text-slate-200 font-medium">${r.techDate}</td>
+                    <td class="p-3 text-slate-200">${r.reqDate}</td>
+                    <td class="p-3 text-slate-200">${r.buyerDate}</td>
+                    <td class="p-3">${pdfLinkHtml}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="deleteDevTrackerRecord('${r.id}')" class="px-2.5 py-1 text-xs text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 rounded-lg border border-rose-500/20 transition-all">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
         function updateDigitalClock() {
