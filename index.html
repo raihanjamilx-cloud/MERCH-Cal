@@ -78,24 +78,6 @@
             box-shadow: 0 0 15px rgba(56, 189, 248, 0.35);
         }
 
-        /* 3D Styled PG Logo CSS */
-        .pg-logo-3d {
-            font-size: 24px;
-            font-weight: 900;
-            color: #ffffff;
-            background: linear-gradient(135deg, #38bdf8, #0284c7);
-            padding: 8px 12px;
-            border-radius: 12px;
-            letter-spacing: 2px;
-            text-shadow: 2px 2px 0px #0369a1, 4px 4px 0px #0c4a6e;
-            box-shadow: 0 6px 12px rgba(14, 165, 233, 0.4), inset 0 1px 0 rgba(255,255,255,0.4);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(56, 189, 248, 0.5);
-        }
-
-        /* Neon Glow Clock */
         .neon-clock {
             color: #00f0ff;
             text-shadow: 0 0 5px #00f0ff, 0 0 15px #00f0ff, 0 0 30px #0284c7, 0 0 60px #0284c7;
@@ -107,7 +89,6 @@
             font-weight: 700;
         }
 
-        /* Wall Calendar Binder Ring Styling */
         .calendar-binder-ring {
             width: 14px;
             height: 28px;
@@ -118,7 +99,6 @@
             top: -14px;
         }
 
-        /* Custom Scrollbar */
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -135,7 +115,6 @@
             background: rgba(56, 189, 248, 0.7);
         }
 
-        /* Glass Analog Clock Hands */
         .analog-hand {
             position: absolute;
             bottom: 50%;
@@ -188,10 +167,9 @@
     <!-- Login Screen Overlay -->
     <div id="login-overlay" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 flex items-center justify-center p-4">
         <div class="glass-panel w-full max-w-md rounded-2xl border border-slate-700/80 p-8 shadow-2xl animate-fade-in-up space-y-6">
-            <div class="text-center space-y-3">
-                <!-- 3D PG Logo for Login Screen -->
-                <div class="flex justify-center">
-                    <div class="pg-logo-3d text-2xl">PG</div>
+            <div class="text-center space-y-2">
+                <div class="w-20 h-20 rounded-2xl bg-slate-900/80 flex items-center justify-center border border-sky-400/30 p-2 mx-auto shadow-lg shadow-sky-500/20">
+                    <img src="Gemini_Generated_Image_qu44c4qu44c4qu44.jpg" alt="Pretty Group Logo" class="w-full h-full object-contain rounded-xl">
                 </div>
                 <h2 class="text-xl font-extrabold text-white">Pretty Sweaters Ltd Portal</h2>
                 <p class="text-xs text-sky-300/80">Please enter your credentials to access</p>
@@ -222,53 +200,47 @@
             </form>
             
             <div class="text-[11px] text-slate-500 text-center border-t border-slate-800 pt-4">
-                Authorized Personnel Only • Pretty Sweaters Ltd
+                Authorized Personnel Only • Pretty Sweaters Ltd[cite: 5]
             </div>
         </div>
     </div>
 
-    <!-- Ambient background blurred glow circles -->
     <div class="fixed -top-24 -left-24 w-96 h-96 bg-sky-600/15 rounded-full blur-3xl pointer-events-none animate-ambient-pulse"></div>
     <div class="fixed top-1/2 right-0 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-3xl pointer-events-none animate-ambient-pulse" style="animation-delay: 3s;"></div>
 
     <header class="sticky top-0 z-40 glass-panel border-b border-slate-700/50 px-4 lg:px-8 py-3.5">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             
-            <!-- Brand Logo & Title with 3D PG Logo -->
             <div class="flex items-center gap-3.5">
-                <div class="pg-logo-3d">PG</div>
+                <div class="w-12 h-12 rounded-2xl bg-slate-900 border border-cyan-400/40 p-1 flex items-center justify-center shadow-lg shadow-cyan-500/30">
+                    <img src="Gemini_Generated_Image_qu44c4qu44c4qu44.jpg" alt="PG Logo" class="w-full h-full object-contain rounded-xl">
+                </div>
                 <div>
                     <h1 id="i18n-company-title" class="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-sky-200 via-cyan-100 to-white">Pretty Sweaters Ltd</h1>
                     <p id="i18n-company-subtitle" class="text-xs text-sky-300/80 font-medium tracking-wide">Pretty Sweaters Ltd • Merchandising Management System</p>
                 </div>
             </div>
 
-            <!-- Header Actions & Language Switcher -->
             <div class="flex items-center gap-3 flex-wrap">
-                <!-- Logged User Info & Logout Button -->
                 <button onclick="handleLogout()" class="px-3 py-2 text-xs font-semibold text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 rounded-xl transition-all flex items-center gap-2" title="Logout">
                     <i class="fa-solid fa-right-from-bracket"></i>
                     <span id="current-user-display">Logout</span>
                 </button>
 
-                <!-- Interactive Bilingual Language Switcher Toggle Button -->
                 <button onclick="toggleLanguage()" class="px-4 py-2 text-xs font-bold bg-slate-900/90 hover:bg-slate-800 text-sky-300 border border-sky-500/40 rounded-xl shadow-lg shadow-sky-500/10 transition-all flex items-center gap-2.5 group active:scale-95">
                     <i class="fa-solid fa-globe text-cyan-400 text-sm group-hover:rotate-180 transition-transform duration-500"></i>
                     <span id="lang-toggle-text">Language: বাংলা</span>
                     <span class="text-[10px] bg-sky-500/20 text-sky-300 px-1.5 py-0.5 rounded border border-sky-400/30">EN/BN</span>
                 </button>
 
-                <!-- Add New Style Button -->
                 <button onclick="openNewStyleModal()" class="px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 rounded-xl shadow-lg shadow-cyan-500/25 transition-all flex items-center gap-2 active:scale-95 border border-cyan-400/30">
                     <i class="fa-solid fa-plus text-sm"></i> <span id="i18n-btn-add-style">Add New Style</span>
                 </button>
 
-                <!-- Excel Export -->
                 <button onclick="exportStylesCSV()" class="px-3.5 py-2 text-xs font-medium text-slate-200 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-600/50 rounded-xl transition-all flex items-center gap-1.5">
                     <i class="fa-solid fa-file-excel text-emerald-400"></i> <span id="i18n-btn-excel">Excel Export</span>
                 </button>
 
-                <!-- ZIP Download -->
                 <button onclick="downloadZipApp()" class="px-3.5 py-2 text-xs font-medium text-slate-200 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-600/50 rounded-xl transition-all flex items-center gap-1.5" title="Download Full Project Source as ZIP">
                     <i class="fa-solid fa-file-zipper text-sky-400"></i> <span id="i18n-btn-zip">App ZIP</span>
                 </button>
@@ -278,10 +250,8 @@
 
     <main class="max-w-7xl mx-auto px-4 lg:px-8 py-6 space-y-6">
 
-        <!-- Top Row: Animated Digital Clock & Frameless Glass Analog Clock -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-            <!-- Real-time Neon Digital Clock & Frameless Glass Analog Clock Widget -->
             <div class="lg:col-span-5 flex flex-col justify-between glass-panel rounded-2xl p-6 relative overflow-hidden animate-fade-in-up stagger-1">
                 <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -293,32 +263,26 @@
                         <span id="current-timezone-badge" class="text-[11px] bg-slate-900/80 text-sky-300 px-2.5 py-1 rounded-lg border border-slate-700/80 font-mono">BST (+06)</span>
                     </div>
 
-                    <!-- Neon Clock Display -->
                     <div class="text-center py-2">
                         <div id="digital-clock" class="text-3xl sm:text-4xl font-mono font-extrabold neon-clock tracking-widest">11:43:30 PM</div>
                         <div id="digital-date" class="text-xs text-sky-200/90 font-medium mt-1">Sunday, October 11, 2026</div>
                     </div>
 
-                    <!-- Frameless Wall-glued Glass Analog Clock -->
                     <div class="flex justify-center my-3 relative">
                         <div class="w-28 h-28 relative flex items-center justify-center">
-                            <!-- 12 Wall Markers -->
                             <div class="absolute text-[10px] font-bold text-sky-300 -top-1">12</div>
                             <div class="absolute text-[10px] font-bold text-sky-300 -right-1">3</div>
                             <div class="absolute text-[10px] font-bold text-sky-300 -bottom-1">6</div>
                             <div class="absolute text-[10px] font-bold text-sky-300 -left-1">9</div>
 
-                            <!-- Glass Hands -->
                             <div id="analog-hour" class="analog-hand w-1.5 h-7 bg-cyan-200/80 border border-sky-300/60 z-20"></div>
                             <div id="analog-minute" class="analog-hand w-1 h-10 bg-sky-300/80 border border-cyan-300/60 z-30"></div>
                             <div id="analog-second" class="analog-hand w-0.5 h-11 bg-rose-400/90 z-40"></div>
-                            <!-- Center Glass Pin -->
                             <div class="w-3 h-3 rounded-full bg-cyan-400 border border-white z-50 shadow-md shadow-cyan-500/80"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Clock Dynamic Stats -->
                 <div class="grid grid-cols-2 gap-3 mt-2 pt-2 border-t border-slate-700/60">
                     <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
                         <div id="i18n-active-orders-label" class="text-xs text-slate-400">Active Styles</div>
@@ -332,7 +296,6 @@
             </div>
 
             <div class="lg:col-span-7 glass-panel rounded-2xl p-6 relative border-t-8 border-t-amber-800/80 animate-fade-in-up stagger-2">
-                <!-- Wall Hanging Ring Binding Graphics -->
                 <div class="flex justify-between px-8 absolute top-0 left-0 right-0">
                     <div class="calendar-binder-ring left-10"></div>
                     <div class="calendar-binder-ring left-1/4"></div>
@@ -341,7 +304,6 @@
                     <div class="calendar-binder-ring right-10"></div>
                 </div>
 
-                <!-- Calendar Header Navigation -->
                 <div class="flex items-center justify-between mb-4 pt-2">
                     <div>
                         <h2 id="calendar-month-year" class="text-xl font-bold text-slate-100 flex items-center gap-2">
@@ -363,7 +325,6 @@
                     </div>
                 </div>
 
-                <!-- Calendar Days Header -->
                 <div id="calendar-days-header" class="grid grid-cols-7 gap-1 text-center text-xs font-bold text-sky-300 mb-2 py-1 bg-slate-900/60 rounded-lg border border-slate-800/80">
                     <div class="text-rose-400">Sun</div>
                     <div>Mon</div>
@@ -374,67 +335,12 @@
                     <div class="text-amber-400">Sat</div>
                 </div>
 
-                <!-- Calendar Grid -->
                 <div id="calendar-grid" class="grid grid-cols-7 gap-1.5 min-h-[220px]"></div>
             </div>
 
         </div>
 
-        <!-- Development Sample Tracker Section Added Here -->
-        <div class="glass-panel rounded-2xl p-6 relative animate-fade-in-up border border-cyan-500/30">
-            <div class="flex items-center justify-between mb-4 border-b border-slate-700/60 pb-3">
-                <h3 class="text-lg font-bold text-cyan-300 flex items-center gap-2">
-                    <i class="fa-solid fa-clipboard-list text-cyan-400"></i> ডেভেলপমেন্ট স্যামপল ট্র্যাকার (Development Sample Tracker)
-                </h3>
-            </div>
-
-            <!-- Tracker Form Inputs -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">টেকফাইল পাওয়ার তারিখ *</label>
-                    <input type="date" id="tracker-tech-date" class="w-full glass-input px-3 py-2 rounded-xl text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">রিকুইজিশন তারিখ *</label>
-                    <input type="date" id="tracker-req-date" class="w-full glass-input px-3 py-2 rounded-xl text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">বায়ারের কাছে পাঠানোর তারিখ *</label>
-                    <input type="date" id="tracker-buyer-date" class="w-full glass-input px-3 py-2 rounded-xl text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">টেকফাইল পিডিএফ (PDF) সংযুক্তি</label>
-                    <input type="file" id="tracker-pdf-file" accept=".pdf" class="w-full glass-input px-2.5 py-1.5 rounded-xl text-xs text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-sky-500/20 file:text-sky-300">
-                </div>
-            </div>
-
-            <div class="flex justify-end mb-6">
-                <button onclick="addDevTrackerRecord()" class="px-5 py-2 text-xs font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 rounded-xl shadow-lg shadow-cyan-500/20 transition-all flex items-center gap-2 border border-cyan-400/30">
-                    <i class="fa-solid fa-plus"></i> রেকর্ড যুক্ত করুন
-                </button>
-            </div>
-
-            <!-- Tracker Table -->
-            <div class="overflow-x-auto custom-scrollbar">
-                <table class="w-full text-left border-collapse text-xs">
-                    <thead>
-                        <tr class="bg-slate-900/90 text-sky-300 border-b border-slate-700">
-                            <th class="p-3 font-semibold">টেকফাইল পাওয়ার তারিখ</th>
-                            <th class="p-3 font-semibold">রিকুইজিশন তারিখ</th>
-                            <th class="p-3 font-semibold">বায়ারের কাছে পাঠানোর তারিখ</th>
-                            <th class="p-3 font-semibold">সংযুক্ত টেকফাইল (PDF)</th>
-                            <th class="p-3 font-semibold text-center">অ্যাকশন</th>
-                        </tr>
-                    </thead>
-                    <tbody id="dev-tracker-table-body" class="divide-y divide-slate-800">
-                        <!-- Dynamic Records Will Appear Here -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- Total Active Styles -->
             <div class="glass-card rounded-2xl p-4 flex items-center gap-4 animate-fade-in-up stagger-1">
                 <div class="w-12 h-12 rounded-xl bg-sky-500/20 text-sky-400 border border-sky-500/30 flex items-center justify-center text-xl shrink-0">
                     <i class="fa-solid fa-layer-group"></i>
@@ -446,7 +352,6 @@
                 </div>
             </div>
 
-            <!-- Total Order Quantity -->
             <div class="glass-card rounded-2xl p-4 flex items-center gap-4 animate-fade-in-up stagger-2">
                 <div class="w-12 h-12 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center text-xl shrink-0">
                     <i class="fa-solid fa-boxes-packing"></i>
@@ -458,7 +363,6 @@
                 </div>
             </div>
 
-            <!-- Total Order Value -->
             <div class="glass-card rounded-2xl p-4 flex items-center gap-4 animate-fade-in-up stagger-3">
                 <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-xl shrink-0">
                     <i class="fa-solid fa-circle-dollar-to-slot"></i>
@@ -470,7 +374,6 @@
                 </div>
             </div>
 
-            <!-- Pending Approvals -->
             <div class="glass-card rounded-2xl p-4 flex items-center gap-4 animate-fade-in-up stagger-4">
                 <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-xl shrink-0">
                     <i class="fa-solid fa-clock-rotate-left"></i>
@@ -484,15 +387,12 @@
         </div>
 
         <div class="glass-panel rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 animate-fade-in-up">
-            <!-- Search Input -->
             <div class="relative w-full md:w-96">
                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
                 <input type="text" id="search-input" oninput="renderStyleList()" placeholder="Search by Style No, Buyer, or Yarn..." class="w-full glass-input pl-10 pr-4 py-2 rounded-xl text-sm placeholder-slate-400">
             </div>
 
-            <!-- Filter Dropdowns -->
             <div class="flex items-center gap-3 w-full md:w-auto flex-wrap">
-                <!-- Status Filter -->
                 <select id="filter-status" onchange="renderStyleList()" class="glass-input px-3.5 py-2 rounded-xl text-sm bg-slate-900 border-slate-700">
                     <option value="ALL">সকল স্ট্যাটাস (All Status)</option>
                     <option value="Yarn Booking">Yarn Booking</option>
@@ -505,7 +405,6 @@
                     <option value="Shipped">Shipped</option>
                 </select>
 
-                <!-- Gauge Filter -->
                 <select id="filter-gauge" onchange="renderStyleList()" class="glass-input px-3.5 py-2 rounded-xl text-sm bg-slate-900 border-slate-700">
                     <option value="ALL">সকল গেজ (All Gauge)</option>
                     <option value="3GG">3 Gauge (GG)</option>
@@ -527,7 +426,6 @@
                 <span id="styles-count-badge" class="text-xs bg-sky-500/20 text-sky-300 border border-sky-500/30 px-3 py-1 rounded-full">2 Styles Displayed</span>
             </div>
 
-            <!-- Styles Dynamic Animated Card List -->
             <div id="styles-container" class="space-y-4"></div>
         </div>
 
@@ -536,7 +434,6 @@
     <div id="style-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
         <div class="glass-panel w-full max-w-3xl rounded-2xl border border-slate-700 shadow-2xl max-h-[90vh] flex flex-col overflow-hidden animate-fade-in-up">
 
-            <!-- Modal Header -->
             <div class="p-5 border-b border-slate-700/80 flex items-center justify-between bg-slate-900/80">
                 <h3 id="i18n-modal-title" class="text-lg font-bold text-white flex items-center gap-2">নতুন স্টাইল যুক্ত করুন</h3>
                 <button onclick="closeStyleModal()" class="w-8 h-8 rounded-xl bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-all">
@@ -544,24 +441,20 @@
                 </button>
             </div>
 
-            <!-- Modal Form Body -->
             <form id="style-form" onsubmit="handleStyleSubmit(event)" class="p-6 overflow-y-auto custom-scrollbar space-y-4">
                 <input type="hidden" id="form-style-id" value="">
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- Style No -->
                     <div>
                         <label id="i18n-lbl-styleno" class="block text-xs font-semibold text-slate-300 mb-1">Style Number *</label>
                         <input type="text" id="form-style-no" required="" placeholder="Ex: PSL-2026-889" class="w-full glass-input px-3.5 py-2 rounded-xl text-sm">
                     </div>
 
-                    <!-- Buyer Name -->
                     <div>
                         <label id="i18n-lbl-buyer" class="block text-xs font-semibold text-slate-300 mb-1">Buyer Name *</label>
                         <input type="text" id="form-buyer" required="" placeholder="Ex: H&amp;M, Zara, AEO" class="w-full glass-input px-3.5 py-2 rounded-xl text-sm">
                     </div>
 
-                    <!-- Gauge (GG) -->
                     <div>
                         <label id="i18n-lbl-gauge" class="block text-xs font-semibold text-slate-300 mb-1">Gauge (GG) *</label>
                         <select id="form-gauge" required="" class="w-full glass-input px-3.5 py-2 rounded-xl text-sm bg-slate-900">
@@ -573,38 +466,32 @@
                         </select>
                     </div>
 
-                    <!-- Yarn Type -->
                     <div>
                         <label id="i18n-lbl-yarn" class="block text-xs font-semibold text-slate-300 mb-1">Yarn Type &amp; Composition *</label>
                         <input type="text" id="form-yarn" required="" placeholder="Ex: 100% Cotton 2/28s, Acrylic Blend" class="w-full glass-input px-3.5 py-2 rounded-xl text-sm">
                     </div>
 
-                    <!-- Quantity -->
                     <div>
                         <label id="i18n-lbl-qty" class="block text-xs font-semibold text-slate-300 mb-1">Order Quantity (Pcs) *</label>
                         <input type="number" id="form-quantity" required="" min="1" placeholder="Ex: 12000" class="w-full glass-input px-3.5 py-2 rounded-xl text-sm">
                     </div>
 
-                    <!-- FOB Price -->
                     <div>
                         <label id="i18n-lbl-fob" class="block text-xs font-semibold text-slate-300 mb-1">FOB Price ($ / Pc) *</label>
                         <input type="number" step="0.01" id="form-fob" required="" placeholder="Ex: 8.50" class="w-full glass-input px-3.5 py-2 rounded-xl text-sm">
                     </div>
 
-                    <!-- Order Date -->
                     <div>
                         <label id="i18n-lbl-orderdate" class="block text-xs font-semibold text-slate-300 mb-1">Order Received Date *</label>
                         <input type="date" id="form-order-date" required="" class="w-full glass-input px-3.5 py-2 rounded-xl text-sm">
                     </div>
 
-                    <!-- Shipment Date -->
                     <div>
                         <label id="i18n-lbl-shipdate" class="block text-xs font-semibold text-slate-300 mb-1">Shipment Date *</label>
                         <input type="date" id="form-ship-date" required="" class="w-full glass-input px-3.5 py-2 rounded-xl text-sm">
                     </div>
                 </div>
 
-                <!-- Status & Attachments -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-700/60">
                     <div>
                         <label id="i18n-lbl-status" class="block text-xs font-semibold text-slate-300 mb-1">Current Stage *</label>
@@ -627,7 +514,6 @@
                     </div>
                 </div>
 
-                <!-- Tech Pack Upload -->
                 <div>
                     <label id="i18n-lbl-techpack" class="block text-xs font-semibold text-slate-300 mb-1">Tech Pack PDF Upload</label>
                     <input type="file" id="form-techpack" accept=".pdf,image/*" onchange="handleTechpackFile(event)" class="w-full glass-input px-3 py-1.5 rounded-xl text-xs text-slate-400 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cyan-500/20 file:text-cyan-300">
@@ -635,13 +521,11 @@
                     <input type="hidden" id="form-techpack-data" value="">
                 </div>
 
-                <!-- Image Preview -->
                 <div id="image-preview-container" class="hidden mt-2 p-2 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center gap-3">
                     <img id="image-preview" class="w-16 h-16 object-cover rounded-lg border border-slate-700">
                     <span id="i18n-img-ready" class="text-xs text-slate-400">Image Ready</span>
                 </div>
 
-                <!-- Form Submit Buttons -->
                 <div class="pt-4 flex justify-end gap-3 border-t border-slate-700/80">
                     <button type="button" onclick="closeStyleModal()" class="px-4 py-2 text-xs font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-xl transition-all">
                         <span id="i18n-btn-cancel">Cancel</span>
@@ -677,13 +561,12 @@
     </div>
 
     <script>
-        // Multi-User Symbolic Credentials List (5 Users)
         const validUsers = {
-            "mridul": "m123",       // 1. Mridul kumar shaha
-            "shafikul": "s123",     // 2. Shafikul islam rasel
-            "rounek": "r123",       // 3. Rounek rahman
-            "solaiman": "s456",     // 4. Solaiman hossen
-            "raihan": "r456"        // 5. Raihan jamil
+            "mridul": "m123",
+            "shafikul": "s123",
+            "rounek": "r123",
+            "solaiman": "s456",
+            "raihan": "r456"
         };
 
         function handleLogin(e) {
@@ -717,12 +600,10 @@
             } else {
                 document.getElementById('login-overlay').classList.remove('hidden');
             }
-            renderDevTrackerRecords();
         });
 
-        // Firebase Config
         const firebaseConfig = {
-            apiKey: "AIzaSyBNSZN8Xud3MDtP-1JujurZjp2Wm3EBDCs",
+            apiKey: "AIzaSyBNSZN8Xud3MDtP-lJujurZjp2Wm3EBDCs",
             authDomain: "merch-calendar-59467.firebaseapp.com",
             databaseURL: "https://merch-calendar-59467-default-rtdb.firebaseio.com",
             projectId: "merch-calendar-59467",
@@ -731,7 +612,6 @@
             appId: "1:291416023418:web:8798be470882e72087f6c3"
         };
 
-        // Initialize Firebase (Compat mode)
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
@@ -884,7 +764,6 @@
         function applyLanguage() {
             const lang = i18n[currentLang];
 
-            // Header elements
             document.getElementById('lang-toggle-text').innerText = `Language: ${currentLang === 'BN' ? 'English' : 'বাংলা'}`;
             document.getElementById('i18n-company-title').innerText = lang.companyTitle;
             document.getElementById('i18n-company-subtitle').innerText = lang.companySubtitle;
@@ -892,14 +771,12 @@
             document.getElementById('i18n-btn-excel').innerText = lang.btnExcel;
             document.getElementById('i18n-btn-zip').innerText = lang.btnZip;
 
-            // Widget & Clock labels
             document.getElementById('i18n-live-clock-label').innerText = lang.liveClockLabel;
             document.getElementById('i18n-active-orders-label').innerText = lang.activeOrdersLabel;
             document.getElementById('i18n-upcoming-ship-label').innerText = lang.upcomingShipLabel;
             document.getElementById('i18n-calendar-desc').innerText = lang.calDesc;
             document.getElementById('i18n-cal-today').innerText = lang.calToday;
 
-            // KPIs
             document.getElementById('i18n-kpi-1-label').innerText = lang.kpi1Label;
             document.getElementById('i18n-kpi-1-sub').innerText = lang.kpi1Sub;
             document.getElementById('i18n-kpi-2-label').innerText = lang.kpi2Label;
@@ -909,11 +786,9 @@
             document.getElementById('i18n-kpi-4-label').innerText = lang.kpi4Label;
             document.getElementById('i18n-kpi-4-sub').innerText = lang.kpi4Sub;
 
-            // Search
             document.getElementById('search-input').placeholder = lang.searchPlaceholder;
             document.getElementById('i18n-styles-master-title').innerHTML = `<i class="fa-solid fa-list-check text-cyan-400"></i> ${lang.stylesMasterTitle}`;
 
-            // Modal Labels
             document.getElementById('i18n-modal-title').innerText = lang.modalTitleAdd;
             document.getElementById('i18n-lbl-styleno').innerText = lang.lblStyleNo;
             document.getElementById('i18n-lbl-buyer').innerText = lang.lblBuyer;
@@ -939,156 +814,31 @@
             renderStyleList();
         }
 
-        const STORAGE_KEY_STYLES = 'priti_sweater_styles_v3';
-        const STORAGE_KEY_NOTES = 'priti_sweater_calendar_notes_v3';
-        const STORAGE_KEY_DEV_TRACKER = 'priti_dev_sample_tracker_records';
+        let styles = [];
+        let calendarNotes = {};
 
-        const initialSampleStyles = [
-            {
-                id: 'style_101',
-                styleNo: 'PSL-7740',
-                buyer: 'H&M Sweden',
-                gauge: '12GG',
-                yarn: '100% Cotton 2/28s Corespun',
-                buttonsZippers: 'Yes (Plastic Buttons)',
-                knittingTime: '45 mins',
-                linkingTime: '20 mins',
-                finishingTime: '15 mins',
-                weight: '320g',
-                quantity: 15000,
-                fob: 7.80,
-                orderDate: '2026-09-15',
-                shipDate: '2026-11-20',
-                status: 'Fit Sample',
-                image: '',
-                techpackName: 'HM_PSL-7740_TechPack.pdf',
-                techpackData: '',
-                destinationCountry: 'Brazil',
-                destinationDepartment: 'Menswear',
-                colors: [{ name: 'Navy Blue', image: '', status: 'Labdip approval', date: '12-Aug-2026' }],
-                fitSampleDate: '12-Aug-2026',
-                fitSampleStatus: 'Approved',
-                ppSampleDate: '15-Aug-2026',
-                ppSampleStatus: 'Pending',
-                productionFileStatus: 'Pending',
-                bulkYarnStatus: 'sample yarn',
-                pcsKnitting: 1200,
-                pcsLinking: 1100,
-                pcsFinishing: 950,
-                pcsWashing: 900,
-                pcsPacking: 850,
-                inspectionStatus: 'Pending',
-                shipmentStatus: 'Pending'
-            }
-        ];
-
-        let styles = JSON.parse(localStorage.getItem(STORAGE_KEY_STYLES)) || initialSampleStyles;
-        let calendarNotes = JSON.parse(localStorage.getItem(STORAGE_KEY_NOTES)) || {
-            '2026-10-15': 'Yarn delivery PSL-7740',
-            '2026-10-22': 'PP Sample Fitting'
-        };
-        let devTrackerRecords = JSON.parse(localStorage.getItem(STORAGE_KEY_DEV_TRACKER)) || [
-            {
-                id: 'dev_1',
-                techDate: '2026-10-01',
-                reqDate: '2026-10-03',
-                buyerDate: '2026-10-08',
-                pdfName: 'TechPack_Sample_01.pdf',
-                pdfData: ''
-            }
-        ];
-
-        function saveToStorage() {
-            localStorage.setItem(STORAGE_KEY_STYLES, JSON.stringify(styles));
-            localStorage.setItem(STORAGE_KEY_NOTES, JSON.stringify(calendarNotes));
-            localStorage.setItem(STORAGE_KEY_DEV_TRACKER, JSON.stringify(devTrackerRecords));
-        }
-
-        // Development Sample Tracker Functions
-        function addDevTrackerRecord() {
-            const techDate = document.getElementById('tracker-tech-date').value;
-            const reqDate = document.getElementById('tracker-req-date').value;
-            const buyerDate = document.getElementById('tracker-buyer-date').value;
-            const pdfInput = document.getElementById('tracker-pdf-file');
-
-            if (!techDate || !reqDate || !buyerDate) {
-                alert('দয়া করে সব কয়টি তারিখ পূরণ করুন!');
-                return;
-            }
-
-            let pdfName = 'N/A';
-            let pdfData = '';
-
-            if (pdfInput.files && pdfInput.files[0]) {
-                pdfName = pdfInput.files[0].name;
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    pdfData = e.target.result;
-                    finalizeDevRecord(techDate, reqDate, buyerDate, pdfName, pdfData);
-                };
-                reader.readAsDataURL(pdfInput.files[0]);
+        // Real-time Firebase Sync Setup
+        database.ref('styles').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                styles = Object.keys(data).map(key => ({ ...data[key], id: key }));
             } else {
-                finalizeDevRecord(techDate, reqDate, buyerDate, pdfName, pdfData);
+                styles = [];
             }
-        }
+            renderStyleList();
+        });
 
-        function finalizeDevRecord(techDate, reqDate, buyerDate, pdfName, pdfData) {
-            const newRecord = {
-                id: 'dev_' + Date.now(),
-                techDate,
-                reqDate,
-                buyerDate,
-                pdfName,
-                pdfData
-            };
+        database.ref('calendarNotes').on('value', (snapshot) => {
+            const data = snapshot.val();
+            calendarNotes = data || {};
+            renderCalendar();
+        });
 
-            devTrackerRecords.unshift(newRecord);
-            saveToStorage();
-            renderDevTrackerRecords();
-
-            // Reset inputs
-            document.getElementById('tracker-tech-date').value = '';
-            document.getElementById('tracker-req-date').value = '';
-            document.getElementById('tracker-buyer-date').value = '';
-            document.getElementById('tracker-pdf-file').value = '';
-        }
-
-        function deleteDevTrackerRecord(id) {
-            if (confirm('এই রেকর্ডটি মুছে ফেলতে চান?')) {
-                devTrackerRecords = devTrackerRecords.filter(r => r.id !== id);
-                saveToStorage();
-                renderDevTrackerRecords();
-            }
-        }
-
-        function renderDevTrackerRecords() {
-            const tbody = document.getElementById('dev-tracker-table-body');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            if (devTrackerRecords.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">কোনো ডেভলপমেন্ট স্যামপল রেকর্ড নেই।</td></tr>`;
-                return;
-            }
-
-            devTrackerRecords.forEach(r => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-800/40 transition-all";
-                const pdfLinkHtml = r.pdfData ? `<a href="${r.pdfData}" download="${r.pdfName}" class="text-sky-400 hover:text-sky-300 font-semibold flex items-center gap-1.5"><i class="fa-solid fa-file-pdf text-rose-400"></i> ${r.pdfName}</a>` : `<span class="text-slate-500">${r.pdfName}</span>`;
-
-                tr.innerHTML = `
-                    <td class="p-3 text-slate-200 font-medium">${r.techDate}</td>
-                    <td class="p-3 text-slate-200">${r.reqDate}</td>
-                    <td class="p-3 text-slate-200">${r.buyerDate}</td>
-                    <td class="p-3">${pdfLinkHtml}</td>
-                    <td class="p-3 text-center">
-                        <button onclick="deleteDevTrackerRecord('${r.id}')" class="px-2.5 py-1 text-xs text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 rounded-lg border border-rose-500/20 transition-all">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
+        function saveToCloudStorage() {
+            const stylesObj = {};
+            styles.forEach(s => { stylesObj[s.id] = s; });
+            database.ref('styles').set(stylesObj);
+            database.ref('calendarNotes').set(calendarNotes);
         }
 
         function updateDigitalClock() {
@@ -1114,7 +864,6 @@
             document.getElementById('digital-clock').innerText = timeStr;
             document.getElementById('digital-date').innerText = dateStr;
 
-            // Analog Clock Hands Rotation
             const secDeg = (now.getSeconds() / 60) * 360;
             const minDeg = (now.getMinutes() / 60) * 360 + (now.getSeconds() / 60) * 6;
             const hourDeg = ((now.getHours() % 12) / 12) * 360 + (now.getMinutes() / 60) * 30;
@@ -1125,7 +874,7 @@
         }
         setInterval(updateDigitalClock, 1000);
 
-        let currentCalendarDate = new Date(2026, 9, 1); // Oct 2026 default
+        let currentCalendarDate = new Date(2026, 9, 1);
 
         function renderCalendarDaysHeader() {
             const headerContainer = document.getElementById('calendar-days-header');
@@ -1143,13 +892,15 @@
 
         function renderCalendar() {
             const grid = document.getElementById('calendar-grid');
+            if (!grid) return;
             grid.innerHTML = '';
 
             const year = currentCalendarDate.getFullYear();
             const month = currentCalendarDate.getMonth();
             const lang = i18n[currentLang];
 
-            document.getElementById('calendar-month-title').innerText = `${lang.months[month]} ${year}`;
+            const titleEl = document.getElementById('calendar-month-title');
+            if (titleEl) titleEl.innerText = `${lang.months[month]} ${year}`;
 
             const firstDayIndex = new Date(year, month, 1).getDay();
             const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
@@ -1218,7 +969,7 @@
             } else {
                 delete calendarNotes[dateKey];
             }
-            saveToStorage();
+            saveToCloudStorage();
             renderCalendar();
             closeCalendarNoteModal();
         }
@@ -1226,7 +977,7 @@
         function deleteCalendarNote() {
             const dateKey = document.getElementById('calendar-note-date-key').value;
             delete calendarNotes[dateKey];
-            saveToStorage();
+            saveToCloudStorage();
             renderCalendar();
             closeCalendarNoteModal();
         }
@@ -1263,12 +1014,17 @@
 
         function renderStyleList() {
             const container = document.getElementById('styles-container');
+            if (!container) return;
             container.innerHTML = '';
 
             const lang = i18n[currentLang];
-            const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
-            const statusFilter = document.getElementById('filter-status').value;
-            const gaugeFilter = document.getElementById('filter-gauge').value;
+            const searchInputEl = document.getElementById('search-input');
+            const statusFilterEl = document.getElementById('filter-status');
+            const gaugeFilterEl = document.getElementById('filter-gauge');
+
+            const searchTerm = searchInputEl ? searchInputEl.value.toLowerCase().trim() : '';
+            const statusFilter = statusFilterEl ? statusFilterEl.value : 'ALL';
+            const gaugeFilter = gaugeFilterEl ? gaugeFilterEl.value : 'ALL';
 
             const filtered = styles.filter(s => {
                 const matchSearch = s.styleNo.toLowerCase().includes(searchTerm) ||
@@ -1279,7 +1035,8 @@
                 return matchSearch && matchStatus && matchGauge;
             });
 
-            document.getElementById('styles-count-badge').innerText = `${filtered.length} ${lang.stylesCountSuffix}`;
+            const badgeEl = document.getElementById('styles-count-badge');
+            if (badgeEl) badgeEl.innerText = `${filtered.length} ${lang.stylesCountSuffix}`;
 
             if (filtered.length === 0) {
                 container.innerHTML = `
@@ -1300,7 +1057,6 @@
                 card.className = "glass-panel rounded-2xl p-5 border border-slate-700/60 space-y-4 hover:border-slate-600 transition-all animate-fade-in-up";
 
                 card.innerHTML = `
-                    <!-- Header -->
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-700/60 pb-4">
                         <div class="flex items-center gap-4">
                             <div class="w-16 h-16 rounded-xl bg-slate-900 border border-slate-700 overflow-hidden flex items-center justify-center shrink-0">
@@ -1316,7 +1072,6 @@
                             </div>
                         </div>
 
-                        <!-- Status & Controls -->
                         <div class="flex items-center gap-2 flex-wrap">
                             <span class="px-3 py-1 text-xs font-bold rounded-xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 border border-amber-500/30">
                                 <i class="fa-solid fa-spinner animate-spin text-[10px] mr-1"></i> ${s.status}
@@ -1330,7 +1085,6 @@
                         </div>
                     </div>
 
-                    <!-- Added Style Spec Bar & Costing Calculator -->
                     <div class="bg-slate-900/80 p-3.5 rounded-xl border border-sky-500/30 space-y-3">
                         <div class="text-xs font-bold text-cyan-300 flex items-center justify-between">
                             <span><i class="fa-solid fa-sliders text-sky-400 mr-1"></i> Style Specs & Costing Calculator</span>
@@ -1344,7 +1098,6 @@
                             <div class="bg-slate-800/60 p-2 rounded-lg"><span class="text-slate-400 block">Weight:</span> <strong class="text-white">${s.weight || 'N/A'}</strong></div>
                         </div>
 
-                        <!-- Sample Costing Calculator Inputs -->
                         <div class="pt-2 border-t border-slate-800 grid grid-cols-2 sm:grid-cols-5 gap-2 items-center text-xs">
                             <input type="number" id="cost-yarn-${s.id}" oninput="calculateCosting('${s.id}')" placeholder="Yarn ($)" class="glass-input p-1.5 rounded-lg text-xs">
                             <input type="number" id="cost-acc-${s.id}" oninput="calculateCosting('${s.id}')" placeholder="Acc/Trims ($)" class="glass-input p-1.5 rounded-lg text-xs">
@@ -1356,7 +1109,6 @@
                         </div>
                     </div>
 
-                    <!-- Metrics Grid -->
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-900/40 p-3 rounded-xl border border-slate-800 text-xs">
                         <div>
                             <span class="text-slate-400 block">${lang.orderQtyText}</span>
@@ -1376,7 +1128,6 @@
                         </div>
                     </div>
 
-                    <!-- Tech Pack Attachment Link -->
                     <div class="flex items-center justify-between text-xs bg-slate-900/60 px-3.5 py-2 rounded-xl border border-slate-800">
                         <span class="text-slate-400 flex items-center gap-2">
                             <i class="fa-solid fa-file-pdf text-rose-400 text-sm"></i>
@@ -1385,14 +1136,12 @@
                         ${s.techpackName ? `<a href="${techpackLink}" download="${s.techpackName}" class="text-sky-400 hover:text-sky-300 font-semibold flex items-center gap-1"><i class="fa-solid fa-download"></i> ${lang.downloadText}</a>` : '<span class="text-slate-500">N/A</span>'}
                     </div>
 
-                    <!-- Customized Time & Action Steps (13 Customized Buttons) -->
                     <div class="pt-2">
                         <div class="text-xs font-bold text-sky-300 mb-2.5 flex items-center gap-2">
                             <i class="fa-solid fa-timeline"></i> ${lang.tnaTitle}
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
                             
-                            <!-- 1. Destination Button -->
                             <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
                                 <div class="font-semibold text-cyan-300">${lang.tnaSteps.destination}</div>
                                 <div class="grid grid-cols-2 gap-1 text-[11px]">
@@ -1401,7 +1150,6 @@
                                 </div>
                             </div>
 
-                            <!-- 2. Color Button (Up to 10 Colors with Ref Pic & Date Dropdown) -->
                             <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
                                 <div class="font-semibold text-cyan-300 flex justify-between items-center">
                                     <span>${lang.tnaSteps.color}</span>
@@ -1423,7 +1171,6 @@
                                 </div>
                             </div>
 
-                            <!-- 3. Fit Sample Button -->
                             <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
                                 <div class="font-semibold text-cyan-300">${lang.tnaSteps.fitSample}</div>
                                 <select onchange="updateStyleField('${s.id}', 'fitSampleStatus', this.value)" class="glass-input w-full px-1.5 py-0.5 rounded text-[11px] bg-slate-900">
@@ -1435,7 +1182,6 @@
                                 <input type="text" value="${s.fitSampleDate || '12-Aug-2026'}" onchange="updateStyleField('${s.id}', 'fitSampleDate', this.value)" placeholder="12-Aug-2026" class="glass-input w-full px-1.5 py-0.5 rounded glowing-date-text text-[11px]">
                             </div>
 
-                            <!-- 4. PP Sample Button -->
                             <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
                                 <div class="font-semibold text-cyan-300">${lang.tnaSteps.ppSample}</div>
                                 <select onchange="updateStyleField('${s.id}', 'ppSampleStatus', this.value)" class="glass-input w-full px-1.5 py-0.5 rounded text-[11px] bg-slate-900">
@@ -1447,7 +1193,6 @@
                                 <input type="text" value="${s.ppSampleDate || '12-Aug-2026'}" onchange="updateStyleField('${s.id}', 'ppSampleDate', this.value)" placeholder="12-Aug-2026" class="glass-input w-full px-1.5 py-0.5 rounded glowing-date-text text-[11px]">
                             </div>
 
-                            <!-- 5. Production File Button -->
                             <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
                                 <div class="font-semibold text-cyan-300">${lang.tnaSteps.productionFile}</div>
                                 <select onchange="updateStyleField('${s.id}', 'productionFileStatus', this.value)" class="glass-input w-full px-1.5 py-0.5 rounded text-[11px] bg-slate-900">
@@ -1456,7 +1201,6 @@
                                 </select>
                             </div>
 
-                            <!-- 6. Bulk Yarn Inhouse Button -->
                             <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
                                 <div class="font-semibold text-cyan-300">${lang.tnaSteps.bulkYarn}</div>
                                 <select onchange="updateStyleField('${s.id}', 'bulkYarnStatus', this.value)" class="glass-input w-full px-1.5 py-0.5 rounded text-[11px] bg-slate-900">
@@ -1466,37 +1210,31 @@
                                 </select>
                             </div>
 
-                            <!-- 7. Knitting (Manual Pcs) -->
                             <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
                                 <div class="font-semibold text-cyan-300">${lang.tnaSteps.knitting} (Pcs)</div>
                                 <input type="number" value="${s.pcsKnitting || 0}" onchange="updateStyleField('${s.id}', 'pcsKnitting', parseInt(this.value))" placeholder="Pcs..." class="glass-input w-full px-1.5 py-0.5 rounded text-[11px]">
                             </div>
 
-                            <!-- 8. Linking (Manual Pcs) -->
                             <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
                                 <div class="font-semibold text-cyan-300">${lang.tnaSteps.linking} (Pcs)</div>
                                 <input type="number" value="${s.pcsLinking || 0}" onchange="updateStyleField('${s.id}', 'pcsLinking', parseInt(this.value))" placeholder="Pcs..." class="glass-input w-full px-1.5 py-0.5 rounded text-[11px]">
                             </div>
 
-                            <!-- 9. Finishing (Manual Pcs) -->
                             <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
                                 <div class="font-semibold text-cyan-300">${lang.tnaSteps.finishing} (Pcs)</div>
                                 <input type="number" value="${s.pcsFinishing || 0}" onchange="updateStyleField('${s.id}', 'pcsFinishing', parseInt(this.value))" placeholder="Pcs..." class="glass-input w-full px-1.5 py-0.5 rounded text-[11px]">
                             </div>
 
-                            <!-- 10. Washing (Manual Pcs) -->
                             <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
                                 <div class="font-semibold text-cyan-300">${lang.tnaSteps.washing} (Pcs)</div>
                                 <input type="number" value="${s.pcsWashing || 0}" onchange="updateStyleField('${s.id}', 'pcsWashing', parseInt(this.value))" placeholder="Pcs..." class="glass-input w-full px-1.5 py-0.5 rounded text-[11px]">
                             </div>
 
-                            <!-- 11. Packing (Manual Pcs) -->
                             <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
                                 <div class="font-semibold text-cyan-300">${lang.tnaSteps.packing} (Pcs)</div>
                                 <input type="number" value="${s.pcsPacking || 0}" onchange="updateStyleField('${s.id}', 'pcsPacking', parseInt(this.value))" placeholder="Pcs..." class="glass-input w-full px-1.5 py-0.5 rounded text-[11px]">
                             </div>
 
-                            <!-- 12. Inspection Button -->
                             <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
                                 <div class="font-semibold text-cyan-300">${lang.tnaSteps.inspection}</div>
                                 <select onchange="updateStyleField('${s.id}', 'inspectionStatus', this.value)" class="glass-input w-full px-1.5 py-0.5 rounded text-[11px] bg-slate-900">
@@ -1506,7 +1244,6 @@
                                 </select>
                             </div>
 
-                            <!-- 13. Shipment Button -->
                             <div class="p-2.5 rounded-xl border bg-slate-800/80 border-slate-700/60 text-xs space-y-1">
                                 <div class="font-semibold text-cyan-300">${lang.tnaSteps.shipment}</div>
                                 <select onchange="updateStyleField('${s.id}', 'shipmentStatus', this.value)" class="glass-input w-full px-1.5 py-0.5 rounded text-[11px] bg-slate-900">
@@ -1530,7 +1267,7 @@
             const style = styles.find(s => s.id === styleId);
             if (style) {
                 style[field] = value;
-                saveToStorage();
+                saveToCloudStorage();
             }
         }
 
@@ -1540,7 +1277,7 @@
                 if (!style.colors) style.colors = [];
                 if (style.colors.length < 10) {
                     style.colors.push({ name: '', image: '', status: 'Labdip request', date: '12-Aug-2026' });
-                    saveToStorage();
+                    saveToCloudStorage();
                     renderStyleList();
                 } else {
                     alert('Maximum 10 colors allowed!');
@@ -1552,7 +1289,7 @@
             const style = styles.find(s => s.id === styleId);
             if (style && style.colors[idx]) {
                 style.colors[idx].name = val;
-                saveToStorage();
+                saveToCloudStorage();
             }
         }
 
@@ -1560,7 +1297,7 @@
             const style = styles.find(s => s.id === styleId);
             if (style && style.colors[idx]) {
                 style.colors[idx].status = val;
-                saveToStorage();
+                saveToCloudStorage();
             }
         }
 
@@ -1568,7 +1305,7 @@
             const style = styles.find(s => s.id === styleId);
             if (style && style.colors[idx]) {
                 style.colors[idx].date = val;
-                saveToStorage();
+                saveToCloudStorage();
             }
         }
 
@@ -1620,7 +1357,7 @@
         function deleteStyle(id) {
             if (confirm('Delete this style permanently?')) {
                 styles = styles.filter(s => s.id !== id);
-                saveToStorage();
+                saveToCloudStorage();
                 renderStyleList();
             }
         }
@@ -1699,7 +1436,7 @@
                 styles.unshift(styleObj);
             }
 
-            saveToStorage();
+            saveToCloudStorage();
             renderStyleList();
             closeStyleModal();
         }
